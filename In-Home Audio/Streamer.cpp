@@ -20,41 +20,44 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
             sf::IpAddress IP;
             sf::Uint16 Port;
             while(m_Listen) {
-                sf::Packet Packet;
-                Status=m_SocketIn.receive(Packet,IP,Port);
-                if(Status==sf::Socket::Done) {
-                    sf::Uint8 Type;
-                    Packet>>Type;
-                    if(Type==AudioStreamerPacket::Connect)
-                        onConnectRequest(IP);
-                    else if(Type==AudioStreamerPacket::ConnectAccept) {
-                        m_Connected=true;
-                        m_IP=IP;
-                        onConnect(IP);
+                Status=sf::Socket::Done;
+                while(Status==sf::Socket::Done) {
+                    sf::Packet Packet;
+                    Status=m_SocketIn.receive(Packet,IP,Port);
+                    if(Status==sf::Socket::Done) {
+                        sf::Uint8 Type;
+                        Packet>>Type;
+                        if(Type==AudioStreamerPacket::Connect)
+                            onConnectRequest(IP);
+                        else if(Type==AudioStreamerPacket::ConnectAccept) {
+                            m_Connected=true;
+                            m_IP=IP;
+                            onConnect(IP);
+                        }
+                        else if(Type==AudioStreamerPacket::ConnectReject)
+                            onConnectReject(IP);
+                        else if(Type==AudioStreamerPacket::Audio) {
+                            std::vector<sf::Int16> Samples=m_Codec->Decode(Packet);
+                            bool UseSamples=true;
+                            for(int i=0;i<m_FilterIn.size();i++)
+                                if(m_FilterIn[i]->Filter(Samples)==false)
+                                    UseSamples=false;
+                            if(UseSamples)
+                                onSamples(Samples);
+                        }
+                        else if(Type==AudioStreamerPacket::Disconnect)
+                            m_Connected=false;
+                        else if(Type==AudioStreamerPacket::StreamType) {
+                            sf::Uint8 ChannelCount;
+                            sf::Uint32 SampleRate;
+                            Packet>>ChannelCount>>SampleRate;
+                            onGetStats(ChannelCount,SampleRate);
+                        }
                     }
-                    else if(Type==AudioStreamerPacket::ConnectReject)
-                        onConnectReject(IP);
-                    else if(Type==AudioStreamerPacket::Audio) {
-                        std::vector<sf::Int16> Samples=m_Codec->Decode(Packet);
-                        bool UseSamples=true;
-                        for(int i=0;i<m_FilterIn.size();i++)
-                            if(m_FilterIn[i]->Filter(Samples)==false)
-                                UseSamples=false;
-                        if(UseSamples)
-                            onSamples(Samples);
-                    }
-                    else if(Type==AudioStreamerPacket::Disconnect)
-                        m_Connected=false;
-                    else if(Type==AudioStreamerPacket::StreamType) {
-                        sf::Uint8 ChannelCount;
-                        sf::Uint32 SampleRate;
-                        Packet>>ChannelCount>>SampleRate;
-                        onGetStats(ChannelCount,SampleRate);
-                    }
+                    else if(Status==sf::Socket::Error)
+                        std::cout<<"Socket Error"<<std::endl;
                 }
-                else if(Status==sf::Socket::Error)
-                    std::cout<<"Socket Error"<<std::endl;
-                sf::sleep(sf::seconds(.01));
+                sf::sleep(sf::milliseconds(1));
             }
         });
     }
@@ -183,5 +186,6 @@ void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
     m_UsingSamples=true;
     m_Samples.insert(m_Samples.end(),Samples.begin(),Samples.end());
+    if(m_Samples.size()>(getSampleRate()*getChannelCount())/10) m_Samples.erase(m_Samples.begin(),m_Samples.end()-((getSampleRate()*getChannelCount())/10));
     m_UsingSamples=false;
 }
