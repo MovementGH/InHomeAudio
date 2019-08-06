@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]) {
     
     
     
-    MicStreamer Streamer;
+    InputDeviceStreamer Streamer;
     Streamer.Connect("192.168.1.143");
     sf::sleep(sf::seconds(60));
 //    while(true) {

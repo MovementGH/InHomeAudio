@@ -12,19 +12,17 @@
 #include <SFML/Audio.hpp>
 #include "Streamer.hpp"
 
-class MicStreamer : public AudioStreamer, public sf::SoundBufferRecorder {
+class InputDeviceStreamer : public AudioStreamer, public sf::SoundBufferRecorder {
 public:
-    MicStreamer();
-    
+    InputDeviceStreamer();
 protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
     virtual void onConnect(sf::IpAddress IP);
 };
 
-class SpeakerStreamer : public AudioStreamer, public sf::SoundStream {
+class OutputDeviceStreamer : public AudioStreamer, public sf::SoundStream {
 public:
-    SpeakerStreamer();
-    
+    OutputDeviceStreamer();
 protected:
     virtual bool onGetData(Chunk& data);
     virtual void onSeek(sf::Time timeOffset);
