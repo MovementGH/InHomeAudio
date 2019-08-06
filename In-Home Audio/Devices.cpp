@@ -37,6 +37,7 @@ void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRa
 }
 bool OutputDeviceStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
+    m_UsingSamples=true;
     m_Samples.erase(m_Samples.begin(),m_Samples.begin()+m_NumUsed);
     if(m_Samples.size()>=4096) {
         m_UsingSamples=false;
@@ -45,7 +46,9 @@ bool OutputDeviceStreamer::onGetData(Chunk& data) {
         m_NumUsed=4096;
     }
     else {
-        m_Samples.insert(m_Samples.begin(),1024,0);
+        std::vector<sf::Int16> Backup;
+        Backup.resize(1024,0);
+        m_Samples.insert(m_Samples.begin(),Backup.begin(),Backup.end());
         m_UsingSamples=false;
         data.samples=m_Samples.data();
         data.sampleCount=1024;
