@@ -12,7 +12,7 @@
 #include <SFML/Audio.hpp>
 #include "Streamer.hpp"
 
-class InputDeviceStreamer : public AudioStreamer, public sf::SoundBufferRecorder {
+class InputDeviceStreamer : virtual public AudioStreamer, public sf::SoundBufferRecorder {
 public:
     InputDeviceStreamer();
 protected:
@@ -20,7 +20,7 @@ protected:
     virtual void onConnect(sf::IpAddress IP);
 };
 
-class OutputDeviceStreamer : public AudioStreamer, public sf::SoundStream {
+class OutputDeviceStreamer : virtual public AudioStreamer, public sf::SoundStream {
 public:
     OutputDeviceStreamer();
 protected:
