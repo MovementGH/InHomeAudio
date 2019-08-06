@@ -14,11 +14,14 @@ int main(int argc, const char * argv[]) {
     NetworkDiscovery Discoverer(true);
     
     
-    AudioStreamer Streamer;
+    
+    MicStreamer Streamer;
+    std::vector<std::string> Devices=Streamer.getAvailableDevices();
+    for(int i=0;i<Devices.size();i++)
+        std::cout<<Devices[i]<<std::endl;
     Streamer.Connect("192.168.1.143");
     sf::sleep(sf::seconds(1));
-    std::vector<sf::Int32> Samples(5);
-    Streamer.sendSamples(Samples);
+    Streamer.start();
     sf::sleep(sf::seconds(60));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
