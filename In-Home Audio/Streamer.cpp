@@ -141,9 +141,11 @@ void MicStreamer::onConnect(sf::IpAddress IP) {
         start();
 }
 bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
+    if(SampleCount>40000) return true;
     std::vector<sf::Int16> SampleVec(SampleCount);
     for(int i=0;i<SampleCount;i++)
         SampleVec[i]=Samples[i];
+    std::cout<<SampleCount<<std::endl;
     sendSamples(SampleVec);
     return true;
 }
