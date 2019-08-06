@@ -153,6 +153,7 @@ SpeakerStreamer::SpeakerStreamer() : m_NumUsed(0) {
     
 }
 void SpeakerStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
+    std::cout<<"Stats "<<ChannelCount<<" "<<SampleRate<<std::endl;
     initialize(ChannelCount,SampleRate);
     play();
 }
