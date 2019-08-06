@@ -153,16 +153,8 @@ void SpeakerStreamer::PausePlayback() {
 }
 bool SpeakerStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
-    m_UsingSamples=true;
-    sf::Int16 Samples[std::max(4000,(int)m_Samples.size())];
-    for(int i=0;i<m_Samples.size();i++)
-        Samples[i]=m_Samples[i];
-    if(m_Samples.size()<4000)
-        for(std::size_t i=m_Samples.size();i<4000;i++)
-            Samples[i]=0;
-    m_Samples.resize(0);
-    data.samples=Samples;
-    data.sampleCount=std::max(4000,(int)m_Samples.size());
+    data.samples=&m_Samples[m_CurrentSample];
+    data.sampleCount=std::max(4000,(int)(m_Samples.size()-m_CurrentSample));
     m_UsingSamples=false;
     return true;
 }
@@ -170,10 +162,10 @@ void SpeakerStreamer::onSeek(sf::Time timeOffset) {
     
 }
 void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
+    std::cout<<"Received "<<Samples.size()<<" samples"<<std::endl;
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
     m_UsingSamples=true;
-    m_Samples.resize(m_Samples.size()+Samples.size());
-    for(std::size_t i=m_Samples.size()-Samples.size();i<m_Samples.size();i++)
-        m_Samples[i]=Samples[i-(m_Samples.size()-Samples.size())];
+    for(int i=0;i<Samples.size();i++)
+        m_Samples.push_back(Samples[i]);
     m_UsingSamples=false;
 }
