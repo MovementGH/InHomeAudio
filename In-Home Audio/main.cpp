@@ -19,6 +19,7 @@ int main(int argc, const char * argv[]) {
     sf::sleep(sf::seconds(1));
     std::vector<sf::Int32> Samples(5);
     Streamer.sendSamples(Samples);
+    sf::sleep(sf::seconds(60));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
 //        for(int i=0;i<Devices.size();i++)
