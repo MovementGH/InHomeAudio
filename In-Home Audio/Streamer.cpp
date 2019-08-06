@@ -30,6 +30,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
                     else if(Type==AudioStreamerPacket::ConnectAccept) {
                         m_Connected=true;
                         m_IP=IP;
+                        onConnect(IP);
                     }
                     else if(Type==AudioStreamerPacket::ConnectReject)
                         onConnectReject(IP);
@@ -96,21 +97,17 @@ void AudioStreamer::sendSamples(std::vector<sf::Int16> &Samples) {
     }
 }
 
-void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples) {
-    std::cout<<"Received "<<Samples.size()<<" samples"<<std::endl;
-}
-void AudioStreamer::onConnectReject(sf::IpAddress IP) {
-    
-}
+void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples){}
+void AudioStreamer::onConnectReject(sf::IpAddress IP){}
+void AudioStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate){}
+void AudioStreamer::onConnect(sf::IpAddress IP){}
 void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     sf::Packet Packet;
     Packet<<(sf::Uint8)AudioStreamerPacket::ConnectAccept;
     m_SocketOut.send(Packet,IP,18500);
     m_IP=IP;
     m_Connected=true;
-}
-void AudioStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
-    
+    onConnect(IP);
 }
 
 sf::Packet AudioCodec::Encode(std::vector<sf::Int16> &Samples) {
@@ -133,18 +130,26 @@ bool AudioFilter::Filter(std::vector<sf::Int16> &Samples) {
 }
 
 
-MicStreamer::MicStreamer() {
-    
-}
-void MicStreamer::StartRec() {
+MicStreamer::MicStreamer() : m_Playing(false) {
     setChannelCount(2);
     setProcessingInterval(sf::milliseconds(25));
-    start();
-    sf::Packet Packet;
-    Packet<<(sf::Uint8)AudioStreamerPacket::StreamType<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
-    m_SocketOut.send(Packet,m_IP,18500);
+}
+void MicStreamer::StartRec() {
+    if(m_Connected) {
+        m_Playing=true;
+        start();
+        onConnect(m_IP);
+    }
+}
+void MicStreamer::onConnect(sf::IpAddress IP) {
+    if(m_Playing) {
+        sf::Packet Packet;
+        Packet<<(sf::Uint8)AudioStreamerPacket::StreamType<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
+        m_SocketOut.send(Packet,m_IP,18500);
+    }
 }
 void MicStreamer::PauseRec() {
+    m_Playing=false;
     stop();
 }
 bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
@@ -155,7 +160,7 @@ bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCo
     return true;
 }
 
-SpeakerStreamer::SpeakerStreamer() {
+SpeakerStreamer::SpeakerStreamer() : m_GotStats(false), m_WantsPlay(false) {
     
 }
 void SpeakerStreamer::StartPlayback() {

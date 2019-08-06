@@ -48,6 +48,7 @@ protected:
     virtual void onConnectReject(sf::IpAddress IP);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
     virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
+    virtual void onConnect(sf::IpAddress IP);
     
     void sendSamples(std::vector<sf::Int16> &Samples);
     
@@ -69,6 +70,8 @@ public:
     
 protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
+    virtual void onConnect(sf::IpAddress IP);
+    bool m_Playing;
 };
 
 class SpeakerStreamer : public AudioStreamer, public sf::SoundStream {
