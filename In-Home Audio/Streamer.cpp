@@ -202,7 +202,6 @@ void SpeakerStreamer::onSeek(sf::Time timeOffset) {
     
 }
 void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
-    std::cout<<"Received "<<Samples.size()<<" samples"<<std::endl;
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
     m_UsingSamples=true;
     for(int i=0;i<Samples.size();i++)
