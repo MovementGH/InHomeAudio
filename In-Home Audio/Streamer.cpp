@@ -23,22 +23,18 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
                 sf::Packet Packet;
                 Status=m_SocketIn.receive(Packet,IP,Port);
                 if(Status==sf::Socket::Done) {
-                    std::cout<<"Recv"<<std::endl;
                     sf::Uint8 Type;
                     Packet>>Type;
                     if(Type==AudioStreamerPacket::Connect)
                         onConnectRequest(IP);
                     else if(Type==AudioStreamerPacket::ConnectAccept) {
-                        std::cout<<"Accept"<<std::endl;
                         m_Connected=true;
                         m_IP=IP;
                     }
                     else if(Type==AudioStreamerPacket::ConnectReject)
                         onConnectReject(IP);
                     else if(Type==AudioStreamerPacket::Audio) {
-                        std::cout<<"Audio"<<std::endl;
-                        std::vector<sf::Int32> Samples;
-                        m_Codec->Decode(Packet);
+                        std::vector<sf::Int32> Samples=m_Codec->Decode(Packet);
                         bool UseSamples=true;
                         for(int i=0;i<m_FilterIn.size();i++)
                             if(m_FilterIn[i]->Filter(Samples)==false)
@@ -92,7 +88,6 @@ void AudioStreamer::onConnectReject(sf::IpAddress IP) {
     
 }
 void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
-    std::cout<<"Request"<<std::endl;
     sf::Packet Packet;
     Packet<<(sf::Uint8)AudioStreamerPacket::ConnectAccept;
     m_SocketOut.send(Packet,IP,18500);
