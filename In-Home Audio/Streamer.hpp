@@ -65,8 +65,6 @@ protected:
 class MicStreamer : public AudioStreamer, public sf::SoundBufferRecorder {
 public:
     MicStreamer();
-    void StartRec();
-    void PauseRec();
     
 protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
@@ -77,9 +75,6 @@ protected:
 class SpeakerStreamer : public AudioStreamer, public sf::SoundStream {
 public:
     SpeakerStreamer();
-    
-    void StartPlayback();
-    void PausePlayback();
     
 protected:
     virtual bool onGetData(Chunk& data);

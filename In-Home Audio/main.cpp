@@ -15,10 +15,8 @@ int main(int argc, const char * argv[]) {
     
     
     
-    SpeakerStreamer Streamer;
+    MicStreamer Streamer;
     Streamer.Connect("192.168.1.143");
-    sf::sleep(sf::seconds(1));
-    Streamer.StartPlayback();
     sf::sleep(sf::seconds(60));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
