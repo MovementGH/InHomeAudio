@@ -24,7 +24,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                 Status=sf::Socket::Done;
                 while(Status==sf::Socket::Done) {
                     Status=Socket.receive(Packet,IP,Port);
-                    if(Status==sf::Socket::Done) {
+                    if(Status==sf::Socket::Done&&IP!=sf::IpAddress::getLocalAddress()) {
                         sf::String name;
                         sf::Uint8 platform;
                         std::time(&Time);
