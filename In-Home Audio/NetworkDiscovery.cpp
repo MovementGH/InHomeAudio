@@ -48,7 +48,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                 //Send
                 if(m_Discoverable) {
                     Packet.clear();
-                    Packet<<sf::String("Test Name")<<(sf::Uint8)getPlatform();
+                    Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform();
                     Status=Socket.send(Packet,sf::IpAddress::Broadcast,52575);
                 }
                 //Wait

@@ -17,6 +17,7 @@ enum Platform {
     iOS = 3
 };
 
+std::string getComputerName();
 std::string getPlatformName(Platform platform);
 Platform getPlatform();
 #endif /* Platform_hpp */

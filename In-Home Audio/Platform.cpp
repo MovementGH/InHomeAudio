@@ -10,31 +10,49 @@
 
 #ifdef __APPLE__
 #ifdef MacOS
-#define PLATFORM Platform::Mac
 //Mac
+#include <unistd.h>
+#define PLATFORM Platform::Mac
+std::string getComputerName() {
+    char name[50];
+    if(gethostname(name,50)) return "Unknown";
+    return name;
+}
+//End Mac
 #elif iOS
+//iOS
 #define MOBILE
 #define PLATFORM Platform::iOS
-//iOS
+//End iOS
 #else
 # error Invalid platform
 #endif
 #elif __linux__
-#define PLATFORM Platform::Linux
 //Linux
+#include <unistd.h>
+#define PLATFORM Platform::Linux
+std::string getComputerName() {
+    char name[50];
+    if(gethostname(name,50)) return "Unknown";
+    return name;
+}
+//End Linux
 #elif _WIN32
-#define PLATFORM Plaform::Windows
 //Windows
+#define PLATFORM Plaform::Windows
+//End Windows
 #else
 # error Invalid platform
 #endif
 
 #ifdef MOBILE
-#define Mobile true
 //Mobile
+#define Mobile true
+//End Mobile
 #else
-#define Mobile false
 //Desktop
+#define Mobile false
+//End Desktop
 #endif
 
 Platform getPlatform() {
