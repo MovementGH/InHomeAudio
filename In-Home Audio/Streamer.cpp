@@ -155,19 +155,18 @@ void SpeakerStreamer::PausePlayback() {
 bool SpeakerStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
     m_Samples.erase(m_Samples.begin(),m_Samples.begin()+m_NumUsed);
-    m_UsingSamples=false;
     if(m_Samples.size()>=4096) {
+        m_UsingSamples=false;
         data.samples=m_Samples.data();
         data.sampleCount=4096;
         m_NumUsed=4096;
     }
     else {
+        m_Samples.insert(m_Samples.begin(),1024,0);
         m_UsingSamples=false;
-        std::vector<sf::Int16> Replacement;
-        Replacement.resize(1024,0);
-        data.samples=Replacement.data();
+        data.samples=m_Samples.data();
         data.sampleCount=1024;
-        m_NumUsed=0;
+        m_NumUsed=1024;
     }
     return true;
 }
