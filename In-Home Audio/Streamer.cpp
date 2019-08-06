@@ -8,7 +8,7 @@
 
 #include "Streamer.hpp"
 
-AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
+AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(sf::seconds(.1)) {
     m_Codec=new AudioCodec();
     m_SocketOut.setBlocking(false);
     m_SocketIn.setBlocking(true);
