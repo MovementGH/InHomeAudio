@@ -96,6 +96,7 @@ void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     sf::Packet Packet;
     Packet<<(sf::Uint8)AudioStreamerPacket::ConnectAccept;
     m_SocketOut.send(Packet,IP,18500);
+    m_IP=IP;
     m_Connected=true;
 }
 
