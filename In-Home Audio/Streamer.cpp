@@ -54,7 +54,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
                 }
                 else if(Status==sf::Socket::Error)
                     std::cout<<"Socket Error"<<std::endl;
-                sf::sleep(sf::seconds(.1));
+                sf::sleep(sf::seconds(.01));
             }
         });
     }
