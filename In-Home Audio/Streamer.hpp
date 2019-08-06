@@ -43,6 +43,7 @@ public:
     
     bool isConnected();
     
+    void setBufferSize(sf::Time Size);
 protected:
     virtual void onConnectRequest(sf::IpAddress IP);
     virtual void onConnectReject(sf::IpAddress IP);
@@ -53,6 +54,7 @@ protected:
     void sendSamples(std::vector<sf::Int16> &Samples);
     
     bool m_Connected,m_Listen;
+    sf::Time m_BufferSize;
     std::thread* m_WorkerThread;
     sf::UdpSocket m_SocketOut,m_SocketIn;
     sf::IpAddress m_IP;

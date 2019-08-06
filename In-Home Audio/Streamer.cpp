@@ -100,7 +100,9 @@ void AudioStreamer::sendSamples(std::vector<sf::Int16> &Samples) {
         m_SocketOut.send(Packet,m_IP,18500);
     }
 }
-
+void AudioStreamer::setBufferSize(sf::Time Size) {
+    m_BufferSize=Size;
+}
 void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples){}
 void AudioStreamer::onConnectReject(sf::IpAddress IP){}
 void AudioStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate){}
@@ -113,6 +115,7 @@ void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     m_Connected=true;
     onConnect(IP);
 }
+
 
 sf::Packet AudioCodec::Encode(std::vector<sf::Int16> &Samples) {
     sf::Packet Packet;
@@ -186,6 +189,6 @@ void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
     m_UsingSamples=true;
     m_Samples.insert(m_Samples.end(),Samples.begin(),Samples.end());
-    if(m_Samples.size()>(getSampleRate()*getChannelCount())/10) m_Samples.erase(m_Samples.begin(),m_Samples.end()-((getSampleRate()*getChannelCount())/10));
+    if(m_Samples.size()>(getSampleRate()*getChannelCount())*m_BufferSize.asSeconds()) m_Samples.erase(m_Samples.begin(),m_Samples.end()-((getSampleRate()*getChannelCount())*m_BufferSize.asSeconds()));
     m_UsingSamples=false;
 }
