@@ -129,6 +129,7 @@ MicStreamer::MicStreamer() {
 }
 void MicStreamer::StartRec() {
     setChannelCount(2);
+    setProcessingInterval(sf::milliseconds(25));
     start();
 }
 void MicStreamer::PauseRec() {
@@ -153,9 +154,19 @@ void SpeakerStreamer::PausePlayback() {
 }
 bool SpeakerStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
-    data.samples=&m_Samples[m_CurrentSample];
-    data.sampleCount=std::max(4000,(int)(m_Samples.size()-m_CurrentSample));
+    m_Samples.erase(m_Samples.begin(),m_CurrentSample);
     m_UsingSamples=false;
+    if(m_Samples.size()>=4096) {
+        data.samples=m_Samples.data();
+        data.sampleCount=4096;
+    }
+    else {
+        m_UsingSamples=false;
+        std::vector<sf::Int16> Replacement;
+        Replacement.resize(1024,0);
+        data.samples=Replacement.data();
+        data.sampleCount=1024;
+    }
     return true;
 }
 void SpeakerStreamer::onSeek(sf::Time timeOffset) {
