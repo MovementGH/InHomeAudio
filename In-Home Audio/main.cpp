@@ -7,9 +7,12 @@
 //
 
 #include <iostream>
+#include "NetworkDiscovery.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+    std::cout<<"Start"<<std::endl;
+    
+    NetworkDiscovery Discoverer(true);
+    
+    sf::sleep(sf::seconds(60));
 }
