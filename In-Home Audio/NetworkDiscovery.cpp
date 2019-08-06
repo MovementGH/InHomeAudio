@@ -18,33 +18,38 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             sf::Packet Packet;
             sf::IpAddress IP;
             sf::Uint16 Port;
+            time_t* Time;
             while(m_Search) {
                 //Listen
-                Status=Socket.receive(Packet,IP,Port);
-                if(Status==sf::Socket::Done) {
-                    sf::String name;
-                    sf::Uint8 platform;
-                    Packet>>name>>platform;
-                    bool Found=false;
-                    for(int i=0;i<m_Devices.size()&&Found==false;i++) {
-                        if(m_Devices[i].ip==IP) {
-                            m_Devices[i].lastSeen=std::time(nullptr);
-                            m_Devices[i].name=name;
-                            m_Devices[i].platform=(Platform)platform;
-                            Found=true;
+                Status=sf::Socket::Done;
+                while(Status==sf::Socket::Done) {
+                    Status=Socket.receive(Packet,IP,Port);
+                    if(Status==sf::Socket::Done) {
+                        sf::String name;
+                        sf::Uint8 platform;
+                        std::time(Time);
+                        Packet>>name>>platform;
+                        bool Found=false;
+                        for(int i=0;i<m_Devices.size()&&Found==false;i++) {
+                            if(m_Devices[i].ip==IP) {
+                                m_Devices[i].lastSeen=*Time;
+                                m_Devices[i].name=name;
+                                m_Devices[i].platform=(Platform)platform;
+                                Found=true;
+                            }
+                        }
+                        if(Found==false) {
+                            NetworkDevice NewDevice;
+                            NewDevice.ip=IP;
+                            NewDevice.lastSeen=*Time;
+                            NewDevice.name=name;
+                            NewDevice.platform=(Platform)platform;
+                            m_Devices.push_back(NewDevice);
                         }
                     }
-                    if(Found==false) {
-                        NetworkDevice NewDevice;
-                        NewDevice.ip=IP;
-                        NewDevice.lastSeen=std::time(nullptr);
-                        NewDevice.name=name;
-                        NewDevice.platform=(Platform)platform;
-                        m_Devices.push_back(NewDevice);
-                    }
+                    else if(Status==sf::Socket::Error)
+                        std::cout<<"Socket Error!"<<std::endl;
                 }
-                else if(Status==sf::Socket::Error)
-                    std::cout<<"Socket Error!"<<std::endl;
                 //Send
                 if(m_Discoverable) {
                     Packet.clear();
@@ -52,7 +57,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                     Status=Socket.send(Packet,sf::IpAddress::Broadcast,52575);
                 }
                 //Wait
-                sf::sleep(sf::seconds(.5));
+                sf::sleep(sf::seconds(1));
             }
         }
         else
