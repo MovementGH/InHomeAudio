@@ -10,9 +10,13 @@
 #include "NetworkDiscovery.hpp"
 
 int main(int argc, const char * argv[]) {
-    std::cout<<"Start"<<std::endl;
-    
     NetworkDiscovery Discoverer(true);
     
-    sf::sleep(sf::seconds(60));
+    while(true) {
+        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
+        for(int i=0;i<Devices.size();i++)
+            std::cout<<(std::string)Devices[i].name<<" from "<<Devices[i].ip<<" on "<<getPlatformName(Devices[i].platform)<<" at "<<Devices[i].lastSeen<<std::endl;
+        std::cout<<std::endl<<std::endl;
+        sf::sleep(sf::seconds(1));
+    }
 }

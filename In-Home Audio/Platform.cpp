@@ -40,3 +40,7 @@
 Platform getPlatform() {
     return PLATFORM;
 }
+std::string getPlatformName(Platform platform) {
+    std::string PlatformNames[4]={"Windows","Mac","Linux","iOS"};
+    return PlatformNames[platform];
+}

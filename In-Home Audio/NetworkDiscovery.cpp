@@ -21,8 +21,28 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             while(m_Search) {
                 //Listen
                 Status=Socket.receive(Packet,IP,Port);
-                if(Status==sf::Socket::Done)
-                    std::cout<<"Received from "<<IP<<" on "<<Port<<std::endl;
+                if(Status==sf::Socket::Done) {
+                    sf::String name;
+                    sf::Uint8 platform;
+                    Packet>>name>>platform;
+                    bool Found=false;
+                    for(int i=0;i<m_Devices.size()&&Found==false;i++) {
+                        if(m_Devices[i].ip==IP) {
+                            m_Devices[i].lastSeen=std::time(nullptr);
+                            m_Devices[i].name=name;
+                            m_Devices[i].platform=(Platform)platform;
+                            Found=true;
+                        }
+                    }
+                    if(Found==false) {
+                        NetworkDevice NewDevice;
+                        NewDevice.ip=IP;
+                        NewDevice.lastSeen=std::time(nullptr);
+                        NewDevice.name=name;
+                        NewDevice.platform=(Platform)platform;
+                        m_Devices.push_back(NewDevice);
+                    }
+                }
                 else if(Status==sf::Socket::Error)
                     std::cout<<"Socket Error!"<<std::endl;
                 //Send
