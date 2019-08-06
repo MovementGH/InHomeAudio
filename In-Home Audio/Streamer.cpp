@@ -88,9 +88,6 @@ void AudioStreamer::Disconnect() {
         m_Connected=false;
     }
 }
-bool AudioStreamer::isConnected() {
-    return m_Connected;
-}
 void AudioStreamer::sendSamples(std::vector<sf::Int16> &Samples) {
     if(m_Connected) {
         for(int i=0;i<m_FilterOut.size();i++)
@@ -100,9 +97,8 @@ void AudioStreamer::sendSamples(std::vector<sf::Int16> &Samples) {
         m_SocketOut.send(Packet,m_IP,18500);
     }
 }
-void AudioStreamer::setBufferSize(sf::Time Size) {
-    m_BufferSize=Size;
-}
+bool AudioStreamer::isConnected(){return m_Connected;}
+void AudioStreamer::setBufferSize(sf::Time Size){m_BufferSize=Size;}
 void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples){}
 void AudioStreamer::onConnectReject(sf::IpAddress IP){}
 void AudioStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate){}
@@ -114,81 +110,4 @@ void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     m_IP=IP;
     m_Connected=true;
     onConnect(IP);
-}
-
-
-sf::Packet AudioCodec::Encode(std::vector<sf::Int16> &Samples) {
-    sf::Packet Packet;
-    Packet<<(sf::Uint8)AudioStreamerPacket::Audio<<(sf::Uint64)Samples.size();
-    for(int i=0;i<Samples.size();i++)
-        Packet<<Samples[i];
-    return Packet;
-}
-std::vector<sf::Int16> AudioCodec::Decode(sf::Packet &Packet) {
-    sf::Uint64 Len;
-    Packet>>Len;
-    std::vector<sf::Int16> Samples(Len);
-    for(int i=0;i<Len;i++)
-        Packet>>Samples[i];
-    return Samples;
-}
-bool AudioFilter::Filter(std::vector<sf::Int16> &Samples) {
-    return true;
-}
-
-
-MicStreamer::MicStreamer() {
-    setChannelCount(2);
-    setProcessingInterval(sf::milliseconds(25));
-}
-void MicStreamer::onConnect(sf::IpAddress IP) {
-    start();
-    sf::Packet Packet;
-    Packet<<(sf::Uint8)AudioStreamerPacket::StreamType<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
-    m_SocketOut.send(Packet,IP,18500);
-}
-bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
-    if(SampleCount>40000) return true;
-    std::vector<sf::Int16> SampleVec(SampleCount);
-    for(int i=0;i<SampleCount;i++)
-        SampleVec[i]=Samples[i];
-    sendSamples(SampleVec);
-    return true;
-}
-
-SpeakerStreamer::SpeakerStreamer() : m_NumUsed(0) {
-    
-}
-void SpeakerStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
-    
-    initialize(ChannelCount,SampleRate);
-    play();
-}
-bool SpeakerStreamer::onGetData(Chunk& data) {
-    while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
-    m_Samples.erase(m_Samples.begin(),m_Samples.begin()+m_NumUsed);
-    if(m_Samples.size()>=4096) {
-        m_UsingSamples=false;
-        data.samples=m_Samples.data();
-        data.sampleCount=4096;
-        m_NumUsed=4096;
-    }
-    else {
-        m_Samples.insert(m_Samples.begin(),1024,0);
-        m_UsingSamples=false;
-        data.samples=m_Samples.data();
-        data.sampleCount=1024;
-        m_NumUsed=1024;
-    }
-    return true;
-}
-void SpeakerStreamer::onSeek(sf::Time timeOffset) {
-    
-}
-void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
-    while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
-    m_UsingSamples=true;
-    m_Samples.insert(m_Samples.end(),Samples.begin(),Samples.end());
-    if(m_Samples.size()>(getSampleRate()*getChannelCount())*m_BufferSize.asSeconds()) m_Samples.erase(m_Samples.begin(),m_Samples.end()-((getSampleRate()*getChannelCount())*m_BufferSize.asSeconds()));
-    m_UsingSamples=false;
 }

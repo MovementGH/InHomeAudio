@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "NetworkDiscovery.hpp"
-#include "Streamer.hpp"
+#include "Devices.hpp"
 
 int main(int argc, const char * argv[]) {
     NetworkDiscovery Discoverer(true);
