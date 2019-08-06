@@ -19,7 +19,8 @@ enum AudioStreamerPacket {
     ConnectAccept=1,
     ConnectReject=2,
     Audio=3,
-    Disconnect=4
+    Disconnect=4,
+    StreamType=5
 };
 
 
@@ -46,6 +47,7 @@ protected:
     virtual void onConnectRequest(sf::IpAddress IP);
     virtual void onConnectReject(sf::IpAddress IP);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
+    virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
     
     void sendSamples(std::vector<sf::Int16> &Samples);
     
@@ -80,7 +82,8 @@ protected:
     virtual bool onGetData(Chunk& data);
     virtual void onSeek(sf::Time timeOffset);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
-    bool m_UsingSamples;
+    virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
+    bool m_UsingSamples,m_WantsPlay,m_GotStats;
     sf::Uint16 m_NumUsed;
     std::vector<sf::Int16> m_Samples;
 };
