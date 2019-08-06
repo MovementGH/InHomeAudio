@@ -62,11 +62,26 @@ protected:
 class MicStreamer : public AudioStreamer, public sf::SoundBufferRecorder {
 public:
     MicStreamer();
-    void Play();
-    void Pause();
+    void StartRec();
+    void PauseRec();
     
 protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
+};
+
+class SpeakerStreamer : public AudioStreamer, public sf::SoundStream {
+public:
+    SpeakerStreamer();
+    
+    void StartPlayback();
+    void PausePlayback();
+    
+protected:
+    virtual bool onGetData(Chunk& data);
+    virtual void onSeek(sf::Time timeOffset);
+    virtual void onSamples(std::vector<sf::Int16> &Samples);
+    bool m_UsingSamples;
+    std::vector<sf::Int16> m_Samples;
 };
 
 #endif /* Streamer_hpp */

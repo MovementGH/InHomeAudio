@@ -127,11 +127,11 @@ bool AudioFilter::Filter(std::vector<sf::Int16> &Samples) {
 MicStreamer::MicStreamer() {
     
 }
-void MicStreamer::Play() {
+void MicStreamer::StartRec() {
     setChannelCount(2);
     start();
 }
-void MicStreamer::Pause() {
+void MicStreamer::PauseRec() {
     stop();
 }
 bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
@@ -140,4 +140,40 @@ bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCo
         SampleVec[i]=Samples[i];
     sendSamples(SampleVec);
     return true;
+}
+
+SpeakerStreamer::SpeakerStreamer() {
+    initialize(2,44100);
+}
+void SpeakerStreamer::StartPlayback() {
+    play();
+}
+void SpeakerStreamer::PausePlayback() {
+    pause();
+}
+bool SpeakerStreamer::onGetData(Chunk& data) {
+    while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
+    m_UsingSamples=true;
+    sf::Int16 Samples[std::max(4000,(int)m_Samples.size())];
+    for(int i=0;i<m_Samples.size();i++)
+        Samples[i]=m_Samples[i];
+    if(m_Samples.size()<4000)
+        for(std::size_t i=m_Samples.size();i<4000;i++)
+            Samples[i]=0;
+    m_Samples.resize(0);
+    data.samples=Samples;
+    data.sampleCount=std::max(4000,(int)m_Samples.size());
+    m_UsingSamples=false;
+    return true;
+}
+void SpeakerStreamer::onSeek(sf::Time timeOffset) {
+    
+}
+void SpeakerStreamer::onSamples(std::vector<sf::Int16>& Samples) {
+    while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
+    m_UsingSamples=true;
+    m_Samples.resize(m_Samples.size()+Samples.size());
+    for(std::size_t i=m_Samples.size()-Samples.size();i<m_Samples.size();i++)
+        m_Samples[i]=Samples[i-(m_Samples.size()-Samples.size())];
+    m_UsingSamples=false;
 }
