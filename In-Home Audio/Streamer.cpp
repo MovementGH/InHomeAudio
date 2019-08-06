@@ -145,7 +145,6 @@ bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCo
     std::vector<sf::Int16> SampleVec(SampleCount);
     for(int i=0;i<SampleCount;i++)
         SampleVec[i]=Samples[i];
-    std::cout<<SampleCount<<std::endl;
     sendSamples(SampleVec);
     return true;
 }
