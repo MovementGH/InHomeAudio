@@ -34,7 +34,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
                     else if(Type==AudioStreamerPacket::ConnectReject)
                         onConnectReject(IP);
                     else if(Type==AudioStreamerPacket::Audio) {
-                        std::vector<sf::Int32> Samples=m_Codec->Decode(Packet);
+                        std::vector<sf::Int16> Samples=m_Codec->Decode(Packet);
                         bool UseSamples=true;
                         for(int i=0;i<m_FilterIn.size();i++)
                             if(m_FilterIn[i]->Filter(Samples)==false)
@@ -42,6 +42,8 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
                         if(UseSamples)
                             onSamples(Samples);
                     }
+                    else if(Type==AudioStreamerPacket::Disconnect)
+                        m_Connected=false;
                 }
                 else if(Status==sf::Socket::Error)
                     std::cout<<"Socket Error"<<std::endl;
@@ -52,7 +54,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true) {
         std::cout<<"Binding Error"<<std::endl;
 }
 AudioStreamer::~AudioStreamer() {
-    m_Connected=false;
+    Disconnect();
     m_Listen=false;
     m_WorkerThread->join();
 }
@@ -66,12 +68,19 @@ void AudioStreamer::Connect(sf::IpAddress IP) {
     }
 }
 void AudioStreamer::Disconnect() {
-    m_Connected=false;
+    if(m_Connected) {
+        sf::Packet Packet;
+        Packet<<(sf::Uint8)AudioStreamerPacket::Disconnect;
+        m_SocketOut.setBlocking(true);
+        m_SocketOut.send(Packet,m_IP,18500);
+        m_SocketOut.setBlocking(false);
+        m_Connected=false;
+    }
 }
 bool AudioStreamer::isConnected() {
     return m_Connected;
 }
-void AudioStreamer::sendSamples(std::vector<sf::Int32> &Samples) {
+void AudioStreamer::sendSamples(std::vector<sf::Int16> &Samples) {
     if(m_Connected) {
         for(int i=0;i<m_FilterOut.size();i++)
             if(m_FilterOut[i]->Filter(Samples)==false)
@@ -81,7 +90,7 @@ void AudioStreamer::sendSamples(std::vector<sf::Int32> &Samples) {
     }
 }
 
-void AudioStreamer::onSamples(std::vector<sf::Int32> &Samples) {
+void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples) {
     std::cout<<"Received "<<Samples.size()<<" samples"<<std::endl;
 }
 void AudioStreamer::onConnectReject(sf::IpAddress IP) {
@@ -95,21 +104,40 @@ void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     m_Connected=true;
 }
 
-sf::Packet AudioCodec::Encode(std::vector<sf::Int32> &Samples) {
+sf::Packet AudioCodec::Encode(std::vector<sf::Int16> &Samples) {
     sf::Packet Packet;
     Packet<<(sf::Uint8)AudioStreamerPacket::Audio<<(sf::Uint64)Samples.size();
     for(int i=0;i<Samples.size();i++)
         Packet<<Samples[i];
     return Packet;
 }
-std::vector<sf::Int32> AudioCodec::Decode(sf::Packet &Packet) {
+std::vector<sf::Int16> AudioCodec::Decode(sf::Packet &Packet) {
     sf::Uint64 Len;
     Packet>>Len;
-    std::vector<sf::Int32> Samples(Len);
+    std::vector<sf::Int16> Samples(Len);
     for(int i=0;i<Len;i++)
         Packet>>Samples[i];
     return Samples;
 }
-bool AudioFilter::Filter(std::vector<sf::Int32> &Samples) {
+bool AudioFilter::Filter(std::vector<sf::Int16> &Samples) {
+    return true;
+}
+
+
+MicStreamer::MicStreamer() {
+    
+}
+void MicStreamer::Play() {
+    setChannelCount(2);
+    start();
+}
+void MicStreamer::Pause() {
+    stop();
+}
+bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
+    std::vector<sf::Int16> SampleVec(SampleCount);
+    for(int i=0;i<SampleCount;i++)
+        SampleVec[i]=Samples[i];
+    sendSamples(SampleVec);
     return true;
 }
