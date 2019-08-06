@@ -149,7 +149,7 @@ bool MicStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCo
     return true;
 }
 
-SpeakerStreamer::SpeakerStreamer() {
+SpeakerStreamer::SpeakerStreamer() : m_NumUsed(0) {
     
 }
 void SpeakerStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
