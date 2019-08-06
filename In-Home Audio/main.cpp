@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]) {
     
     
     AudioStreamer Streamer;
-    Streamer.connect("192.168.1.143");
+    Streamer.Connect("192.168.1.143");
     sf::sleep(sf::seconds(1));
     std::vector<sf::Int32> Samples(5);
     Streamer.sendSamples(Samples);
