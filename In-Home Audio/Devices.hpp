@@ -32,5 +32,8 @@ protected:
     sf::Uint16 m_NumUsed;
     std::vector<sf::Int16> m_Samples;
 };
+class VoiceChatStreamer : public OutputDeviceStreamer, public InputDeviceStreamer {
+    
+};
 
 #endif /* Devices_hpp */
