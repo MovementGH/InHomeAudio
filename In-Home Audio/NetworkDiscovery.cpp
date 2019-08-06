@@ -18,7 +18,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             sf::Packet Packet;
             sf::IpAddress IP;
             sf::Uint16 Port;
-            time_t* Time;
+            time_t Time;
             while(m_Search) {
                 //Listen
                 Status=sf::Socket::Done;
@@ -27,12 +27,12 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                     if(Status==sf::Socket::Done) {
                         sf::String name;
                         sf::Uint8 platform;
-                        std::time(Time);
+                        std::time(&Time);
                         Packet>>name>>platform;
                         bool Found=false;
                         for(int i=0;i<m_Devices.size()&&Found==false;i++) {
                             if(m_Devices[i].ip==IP) {
-                                m_Devices[i].lastSeen=*Time;
+                                m_Devices[i].lastSeen=Time;
                                 m_Devices[i].name=name;
                                 m_Devices[i].platform=(Platform)platform;
                                 Found=true;
@@ -41,7 +41,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                         if(Found==false) {
                             NetworkDevice NewDevice;
                             NewDevice.ip=IP;
-                            NewDevice.lastSeen=*Time;
+                            NewDevice.lastSeen=Time;
                             NewDevice.name=name;
                             NewDevice.platform=(Platform)platform;
                             m_Devices.push_back(NewDevice);
