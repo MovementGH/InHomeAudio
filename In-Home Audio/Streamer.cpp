@@ -154,11 +154,12 @@ void SpeakerStreamer::PausePlayback() {
 }
 bool SpeakerStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
-    m_Samples.erase(m_Samples.begin(),m_CurrentSample);
+    m_Samples.erase(m_Samples.begin(),m_Samples.begin()+m_NumUsed);
     m_UsingSamples=false;
     if(m_Samples.size()>=4096) {
         data.samples=m_Samples.data();
         data.sampleCount=4096;
+        m_NumUsed=4096;
     }
     else {
         m_UsingSamples=false;
@@ -166,6 +167,7 @@ bool SpeakerStreamer::onGetData(Chunk& data) {
         Replacement.resize(1024,0);
         data.samples=Replacement.data();
         data.sampleCount=1024;
+        m_NumUsed=0;
     }
     return true;
 }

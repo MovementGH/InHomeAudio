@@ -81,7 +81,7 @@ protected:
     virtual void onSeek(sf::Time timeOffset);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
     bool m_UsingSamples;
-    sf::Uint64 m_CurrentSample;
+    sf::Uint16 m_NumUsed;
     std::vector<sf::Int16> m_Samples;
 };
 
