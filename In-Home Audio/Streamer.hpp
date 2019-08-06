@@ -69,7 +69,6 @@ public:
 protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
     virtual void onConnect(sf::IpAddress IP);
-    bool m_Playing;
 };
 
 class SpeakerStreamer : public AudioStreamer, public sf::SoundStream {
@@ -81,7 +80,7 @@ protected:
     virtual void onSeek(sf::Time timeOffset);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
     virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
-    bool m_UsingSamples,m_WantsPlay,m_GotStats;
+    bool m_UsingSamples;
     sf::Uint16 m_NumUsed;
     std::vector<sf::Int16> m_Samples;
 };
