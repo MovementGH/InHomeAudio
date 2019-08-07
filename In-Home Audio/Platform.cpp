@@ -1,11 +1,3 @@
-//
-//  Platform.cpp
-//  In-Home Audio
-//
-//  Created by Mayo Furgerson on 8/6/19.
-//  Copyright © 2019 WimMa Games. All rights reserved.
-//
-
 #include "Platform.hpp"
 
 #ifdef __APPLE__

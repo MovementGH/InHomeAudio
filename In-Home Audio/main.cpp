@@ -1,11 +1,3 @@
-//
-//  main.cpp
-//  In-Home Audio
-//
-//  Created by Mayo Furgerson on 8/6/19.
-//  Copyright © 2019 WimMa Games. All rights reserved.
-//
-
 #include <iostream>
 #include "NetworkDiscovery.hpp"
 #include "Devices.hpp"
@@ -14,10 +6,10 @@ int main(int argc, const char * argv[]) {
     
     
     
-    VoiceChatStreamer Streamer;
+    DualDeviceStreamerStreamer Streamer;
     Streamer.setCodec<OpusCodec>(new OpusCodec(32000));
     Streamer.Connect("192.168.1.143");
-    Streamer.setBufferSize(sf::Seconds(.2));
+    Streamer.setBufferSize(sf::seconds(.2));
     sf::sleep(sf::seconds(60));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();

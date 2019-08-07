@@ -1,11 +1,3 @@
-//
-//  Streamer.hpp
-//  In-Home Audio
-//
-//  Created by Mayo Furgerson on 8/6/19.
-//  Copyright © 2019 WimMa Games. All rights reserved.
-//
-
 #ifndef Streamer_hpp
 #define Streamer_hpp
 #include <iostream>

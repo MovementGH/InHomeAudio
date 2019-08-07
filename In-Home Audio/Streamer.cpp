@@ -1,11 +1,3 @@
-//
-//  Streamer.cpp
-//  In-Home Audio
-//
-//  Created by Mayo Furgerson on 8/6/19.
-//  Copyright © 2019 WimMa Games. All rights reserved.
-//
-
 #include "Streamer.hpp"
 
 AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(sf::seconds(.1)) {
