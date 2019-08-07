@@ -30,12 +30,13 @@ bool InputDeviceStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t 
     return true;
 }
 
-OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0) {
-    
-}
+OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0), m_Init(false) {}
 void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
-    initialize(ChannelCount,SampleRate);
-    play();
+    if(m_Init==false) {
+        initialize(ChannelCount,SampleRate);
+        play();
+        m_Init=true;
+    }
 }
 bool OutputDeviceStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }
