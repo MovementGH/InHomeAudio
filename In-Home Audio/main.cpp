@@ -11,15 +11,14 @@
 #include "Devices.hpp"
 
 int main(int argc, const char * argv[]) {
-    NetworkDiscovery Discoverer(true);
     
     
     
-    InputDeviceStreamer Streamer;
-    Streamer.setCodec<OpusCodec>();
+    VoiceChatStreamer Streamer;
+    Streamer.setCodec<OpusCodec>(new OpusCodec(32000));
     Streamer.Connect("192.168.1.143");
-//    Streamer.setBufferSize(sf::seconds(0.2));
-    sf::sleep(sf::seconds(10));
+    Streamer.setBufferSize(sf::Seconds(.2));
+    sf::sleep(sf::seconds(60));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
 //        for(int i=0;i<Devices.size();i++)
