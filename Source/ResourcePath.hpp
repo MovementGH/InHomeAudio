@@ -22,31 +22,13 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 ////////////////////////////////////////////////////////////
-
 #ifndef RESOURCE_PATH_HPP
 #define RESOURCE_PATH_HPP
-
-////////////////////////////////////////////////////////////
-// Headers
-////////////////////////////////////////////////////////////
 #include <string>
-
-////////////////////////////////////////////////////////////
-/// \brief Return the path to the resource folder.
-///
-/// \return The path to the resource folder associate
-/// with the main bundle or an empty string is there is no bundle.
-///
-////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
-
 #ifdef SFML_SYSTEM_MACOS
 std::string resourcePath(void);
 #else
-inline std::string resourcePath()
-{
-    return "";
-}
+#define resourcePath() std::string("")
 #endif
-
 #endif
