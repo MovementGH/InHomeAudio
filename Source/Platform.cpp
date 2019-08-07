@@ -11,10 +11,13 @@ std::string getComputerName() {
     return name;
 }
 //End Mac
-#elif iOS
+#elif IOS
 //iOS
 #define MOBILE
 #define PLATFORM Platform::iOS
+std::string getComputerName() {
+    return "Unknown";
+}
 //End iOS
 #else
 # error Invalid platform
@@ -49,6 +52,9 @@ std::string getComputerName() {
 
 Platform getPlatform() {
     return PLATFORM;
+}
+bool isMobile() {
+    return Mobile;
 }
 std::string getPlatformName(Platform platform) {
     std::string PlatformNames[4]={"Windows","Mac","Linux","iOS"};

@@ -1,7 +1,7 @@
 #include "Devices.hpp"
 
 InputDeviceStreamer::InputDeviceStreamer() {
-    setChannelCount(2);
+    setChannelCount(1);
     setProcessingInterval(sf::milliseconds(20));
 }
 void InputDeviceStreamer::onConnect(sf::IpAddress IP) {

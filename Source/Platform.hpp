@@ -12,4 +12,5 @@ enum Platform {
 std::string getComputerName();
 std::string getPlatformName(Platform platform);
 Platform getPlatform();
+bool isMobile();
 #endif /* Platform_hpp */
