@@ -18,6 +18,9 @@ void InputDeviceStreamer::onConnect(sf::IpAddress IP) {
     Packet<<(sf::Uint8)AudioStreamerPacket::StreamType<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
     m_SocketOut.send(Packet,IP,18500);
 }
+void InputDeviceStreamer::onDisconnect() {
+    stop();
+}
 bool InputDeviceStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
     if(SampleCount>40000) return true;
     std::vector<sf::Int16> SampleVec(SampleCount);
@@ -31,7 +34,6 @@ OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0) {
     
 }
 void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
-    
     initialize(ChannelCount,SampleRate);
     play();
 }

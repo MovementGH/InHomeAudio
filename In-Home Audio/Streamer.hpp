@@ -33,6 +33,7 @@ protected:
     virtual void onSamples(std::vector<sf::Int16> &Samples);
     virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
     virtual void onConnect(sf::IpAddress IP);
+    virtual void onDisconnect();
     
     void sendSamples(std::vector<sf::Int16> &Samples);
     

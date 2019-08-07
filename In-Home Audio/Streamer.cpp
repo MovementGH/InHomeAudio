@@ -27,8 +27,8 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(
                     if(Status==sf::Socket::Done) {
                         sf::Uint8 Type;
                         Packet>>Type;
-                        if(Type==AudioStreamerPacket::Connect)
-                            onConnectRequest(IP);
+                        if(Type==AudioStreamerPacket::Connect&&m_Connected==false)
+                                onConnectRequest(IP);
                         else if(Type==AudioStreamerPacket::ConnectAccept) {
                             m_Connected=true;
                             m_IP=IP;
@@ -45,8 +45,10 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(
                             if(UseSamples)
                                 onSamples(Samples);
                         }
-                        else if(Type==AudioStreamerPacket::Disconnect)
+                        else if(Type==AudioStreamerPacket::Disconnect) {
                             m_Connected=false;
+                            onDisconnect();
+                        }
                         else if(Type==AudioStreamerPacket::StreamType) {
                             sf::Uint8 ChannelCount;
                             sf::Uint32 SampleRate;
@@ -103,6 +105,7 @@ void AudioStreamer::onSamples(std::vector<sf::Int16> &Samples){}
 void AudioStreamer::onConnectReject(sf::IpAddress IP){}
 void AudioStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate){}
 void AudioStreamer::onConnect(sf::IpAddress IP){}
+void AudioStreamer::onDisconnect(){}
 void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     sf::Packet Packet;
     Packet<<(sf::Uint8)AudioStreamerPacket::ConnectAccept;
