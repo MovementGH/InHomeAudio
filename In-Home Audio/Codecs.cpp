@@ -31,6 +31,7 @@ OpusCodec::OpusCodec(int m_Bitrate) {
     m_Decoder=opus_decoder_create(48000,2,&Error);
     m_Buffer.resize(0);
     m_Samples.resize(1000);
+    m_DecSamples.resize(1000);
 }
 OpusCodec::~OpusCodec() {
     opus_encoder_destroy(m_Encoder);
