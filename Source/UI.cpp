@@ -1,5 +1,5 @@
 #include "UI.hpp"
-InputManager::InputManager(sf::RenderWindow& Window) : m_Window(Window), m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0) {
+InputManager::InputManager() : m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0), m_ScrollTime(0) {
     
 }
 void InputManager::Event(sf::Event& Event) {
@@ -15,13 +15,17 @@ void InputManager::Event(sf::Event& Event) {
     }
     else {
         if(Event.type==sf::Event::TouchBegan)
-            m_WasScrolling=false;
-        if(Event.type==sf::Event::TouchEnded)
-            if(m_WasScrolling==false)
+            m_ScrollTime=0;
+        if(Event.type==sf::Event::TouchEnded) {
+            if(m_ScrollTime<5)
+                m_MousePos={Event.touch.x,Event.touch.y},
                 m_IsClicking=true;
+            else
+                m_MousePos={-1,-1};
+        }
         if(Event.type==sf::Event::TouchMoved)
-            m_WasScrolling=true,
             m_ScrollSpeed=Event.touch.y-m_MousePos.y,
+            m_ScrollTime++,
             m_MousePos={Event.touch.x,Event.touch.y};
     }
 }
@@ -39,15 +43,15 @@ sf::Vector2i InputManager::getMousePos() {
 sf::Int16 InputManager::getScrollSpeed() {
     return m_ScrollSpeed;
 }
-bool Button::Hovering(InputManager& Input) {
-    sf::Vector2i MousePos=Input.getMousePos();
-    return MousePos.x>Area.left&&MousePos.x<Area.left+Area.width&&MousePos.y>Area.top&&MousePos.y<Area.top+Area.height;
+bool Button::Hovering() {
+    sf::Vector2i MousePos=m_Input.getMousePos();
+    return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;
 }
-bool Button::Clicking(InputManager& Input) {
-    return Hovering(Input)&&Input.isClicking();
+bool Button::Clicking() {
+    return Hovering()&&m_Input.isClicking();
 }
-bool Button::Clicked(InputManager& Input) {
-    bool Result=Hovering(Input)&&(Input.isClicking()==false)&&IsClicked==true;
-    IsClicked=Input.isClicking();
+bool Button::Clicked() {
+    bool Result=Hovering()&&(m_Input.isClicking()==false)&&m_IsClicked==true;
+    m_IsClicked=m_Input.isClicking();
     return Result;
 }

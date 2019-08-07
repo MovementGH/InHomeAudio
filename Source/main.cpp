@@ -14,7 +14,7 @@ int main() {
     sf::RenderWindow Window;
     Window.create(sf::VideoMode(1334,750),"Test");
 
-    InputManager Input(Window);
+    InputManager Input;
 
     sf::Font Font;
     Font.loadFromFile(resourcePath()+"sansation.ttf");
@@ -29,11 +29,7 @@ int main() {
             Input.Event(Event);
         }
         Text.setString("Mouse: "+std::to_string(Input.getMousePos().x)+":"+std::to_string(Input.getMousePos().y)+"\nClick: "+(Input.isClicking()?"true":"false")+"\nScroll: "+std::to_string(Input.getScrollSpeed()));
-
-        
-        
-        
-        Window.clear(sf::Color::Black);
+        Window.clear();
         Window.draw(Text);
         Window.display();
     }
