@@ -47,6 +47,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(
                         }
                         else if(Type==AudioStreamerPacket::Disconnect) {
                             m_Connected=false;
+                            m_Codec->Reset();
                             onDisconnect();
                         }
                         else if(Type==AudioStreamerPacket::StreamType) {

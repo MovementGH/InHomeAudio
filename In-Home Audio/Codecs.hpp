@@ -25,6 +25,7 @@ class AudioCodec {
 public:
     virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);
     virtual std::vector<sf::Int16> Decode(sf::Packet &Packet);
+    virtual void Reset();
 };
 
 class OpusCodec : public AudioCodec {
@@ -33,6 +34,7 @@ public:
     ~OpusCodec();
     virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);
     virtual std::vector<sf::Int16> Decode(sf::Packet &Packet);
+    virtual void Reset();
     OpusEncoder* m_Encoder;
     OpusDecoder* m_Decoder;
     std::vector<sf::Uint8> m_Samples,m_DecSamples;

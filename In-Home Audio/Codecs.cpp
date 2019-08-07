@@ -23,6 +23,7 @@ std::vector<sf::Int16> AudioCodec::Decode(sf::Packet &Packet) {
         Packet>>Samples[i];
     return Samples;
 }
+void AudioCodec::Reset(){}
 
 OpusCodec::OpusCodec(int m_Bitrate) {
     int Error=0;
@@ -58,4 +59,11 @@ std::vector<sf::Int16> OpusCodec::Decode(sf::Packet &Packet) {
     for(int i=0;i<DataSize;i++) Packet>>m_DecSamples[i];
     opus_decode(m_Decoder,m_DecSamples.data(),DataSize,Samples.data(),FrameSize,0);
     return Samples;
+}
+void OpusCodec::Reset() {
+    opus_encoder_destroy(m_Encoder);
+    opus_decoder_destroy(m_Decoder);
+    m_Encoder=opus_encoder_create(48000,2,OPUS_APPLICATION_AUDIO,&Error);
+    opus_encoder_ctl(m_Encoder,OPUS_SET_BITRATE(m_Bitrate));
+    m_Decoder=opus_decoder_create(48000,2,&Error);
 }
