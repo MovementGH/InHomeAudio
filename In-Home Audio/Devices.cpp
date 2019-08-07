@@ -10,7 +10,7 @@
 
 InputDeviceStreamer::InputDeviceStreamer() {
     setChannelCount(2);
-    setProcessingInterval(sf::milliseconds(25));
+    setProcessingInterval(sf::milliseconds(20));
 }
 void InputDeviceStreamer::onConnect(sf::IpAddress IP) {
     start();

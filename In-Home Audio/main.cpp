@@ -15,9 +15,11 @@ int main(int argc, const char * argv[]) {
     
     
     
-    VoiceChatStreamer Streamer;
+    InputDeviceStreamer Streamer;
+    Streamer.setCodec<OpusCodec>();
     Streamer.Connect("192.168.1.143");
-    sf::sleep(sf::seconds(60));
+//    Streamer.setBufferSize(sf::seconds(0.2));
+    sf::sleep(sf::seconds(10));
 //    while(true) {
 //        std::vector<NetworkDevice> Devices=Discoverer.getDevices();
 //        for(int i=0;i<Devices.size();i++)

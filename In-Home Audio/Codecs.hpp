@@ -9,6 +9,7 @@
 #ifndef Codecs_hpp
 #define Codecs_hpp
 #include <vector>
+#include <opus.h>
 #include <SFML/Network.hpp>
 
 enum AudioStreamerPacket {
@@ -22,8 +23,21 @@ enum AudioStreamerPacket {
 
 class AudioCodec {
 public:
-    sf::Packet Encode(std::vector<sf::Int16> &Samples);
-    std::vector<sf::Int16> Decode(sf::Packet &Packet);
+    virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);
+    virtual std::vector<sf::Int16> Decode(sf::Packet &Packet);
+};
+
+class OpusCodec : public AudioCodec {
+public:
+    OpusCodec(int m_Bitrate=64000);
+    ~OpusCodec();
+    virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);
+    virtual std::vector<sf::Int16> Decode(sf::Packet &Packet);
+    OpusEncoder* m_Encoder;
+    OpusDecoder* m_Decoder;
+    std::vector<sf::Uint8> m_Samples,m_DecSamples;
+    std::vector<sf::Int16> m_Buffer;
+    int m_Bitrate;
 };
 
 #endif /* Codecs_hpp */

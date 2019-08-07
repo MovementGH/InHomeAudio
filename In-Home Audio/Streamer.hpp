@@ -26,6 +26,8 @@ public:
     
     bool isConnected();
     
+    template<typename CodecType>void setCodec(CodecType* Codec=new CodecType()){m_Codec=Codec;}
+    
     void setBufferSize(sf::Time Size);
 protected:
     virtual void onConnectRequest(sf::IpAddress IP);
