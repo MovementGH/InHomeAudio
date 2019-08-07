@@ -26,11 +26,7 @@ public:
     
     bool isConnected();
     
-//    template<typename CodecType>void setCodec(CodecType* Codec=new CodecType()){m_Codec=Codec;}
-    template<typename CodecType> void setCodec() {
-        delete m_Codec;
-        m_Codec=new CodecType();
-    }
+    template<typename CodecType>void setCodec(CodecType* Codec=new CodecType()){m_Codec=Codec;}
     
     void setBufferSize(sf::Time Size);
 protected:
