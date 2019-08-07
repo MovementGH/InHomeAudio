@@ -61,6 +61,7 @@ std::vector<sf::Int16> OpusCodec::Decode(sf::Packet &Packet) {
     return Samples;
 }
 void OpusCodec::Reset() {
+    int Error=0;
     opus_encoder_destroy(m_Encoder);
     opus_decoder_destroy(m_Decoder);
     m_Encoder=opus_encoder_create(48000,2,OPUS_APPLICATION_AUDIO,&Error);
