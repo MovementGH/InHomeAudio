@@ -31,8 +31,7 @@ void InputManager::Event(sf::Event& Event) {
 }
 void InputManager::Reset() {
     m_ScrollSpeed=0;
-    if(isMobile())
-        m_IsClicking=false;
+    if(isMobile()) m_IsClicking=false;
 }
 bool InputManager::isClicking() {
     return m_IsClicking;
