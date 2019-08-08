@@ -4,39 +4,34 @@
 #include <SFML/Main.hpp>
 #endif
 #endif
-#include <iostream>
-#include "NetworkDiscovery.hpp"
-#include "Devices.hpp"
-#include "UI.hpp"
-#include "ResourcePath.hpp"
+#include "Menu.hpp"
 
 int main() {
     sf::RenderWindow Window;
-    Window.create(sf::VideoMode(1334,750),"Test");
-
-    InputManager Input;
-
-    sf::Font Font;
-    Font.loadFromFile(resourcePath()+"sansation.ttf");
-    sf::Text Text("",Font,64);
-
-    while(Window.isOpen()) {
-        Input.Reset();
-        sf::Event Event;
-        while(Window.pollEvent(Event)) {
-            if(Event.type==sf::Event::Closed)
-                Window.close();
-            Input.Event(Event);
-        }
-        Text.setString("Mouse: "+std::to_string(Input.getMousePos().x)+":"+std::to_string(Input.getMousePos().y)+"\nClick: "+(Input.isClicking()?"true":"false")+"\nScroll: "+std::to_string(Input.getScrollSpeed()));
-        Window.clear();
-        Window.draw(Text);
-        Window.display();
-    }
-    
+    Window.create(sf::VideoMode::getDesktopMode(),"In Home Audio");
+    MenuManager Manager(Window);
     
     return EXIT_SUCCESS;
     
+//    InputManager Input;
+//
+//    sf::Font Font;
+//    Font.loadFromFile(resourcePath()+"sansation.ttf");
+//    sf::Text Text("",Font,64);
+//
+//    while(Window.isOpen()) {
+//        Input.Reset();
+//        sf::Event Event;
+//        while(Window.pollEvent(Event)) {
+//            if(Event.type==sf::Event::Closed)
+//                Window.close();
+//            Input.Event(Event);
+//        }
+//        Text.setString("Mouse: "+std::to_string(Input.getMousePos().x)+":"+std::to_string(Input.getMousePos().y)+"\nClick: "+(Input.isClicking()?"true":"false")+"\nScroll: "+std::to_string(Input.getScrollSpeed()));
+//        Window.clear();
+//        Window.draw(Text);
+//        Window.display();
+//    }
 //    DualDeviceStreamerStreamer Streamer;
 //    Streamer.setCodec<OpusCodec>(new OpusCodec(32000));
 //    Streamer.Connect("192.168.1.143");
