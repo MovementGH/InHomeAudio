@@ -1,6 +1,6 @@
 #include "ModeSelection.hpp"
 namespace Menus {
-    ModeSelection::ModeSelection(MenuManager* Manager):Menu(Manager),
+    ModeSelection::ModeSelection(MenuManager* Manager,std::string MenuName):Menu(Manager,MenuName),
     m_Font(Manager->getAssets().getAsset<sf::Font>(resourcePath()+"sansation.ttf")),
     m_BackgroundTexture(Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Background.jpg")),
     m_VoiceTexture(Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"VoiceCall.png")) {
@@ -16,15 +16,7 @@ namespace Menus {
             m_ModeSprites[i].setTexture(m_VoiceTexture);
             m_ModeSprites[i].setOrigin(m_VoiceTexture.getSize().x/2,m_VoiceTexture.getSize().y/2);
         }
-        if(isMobile()) {
-            m_Background.setColor(sf::Color(128,128,128,16));
-            m_Title.setFillColor(sf::Color(255,255,255,4));
-            m_Line.setFillColor(sf::Color(255,255,255,4));
-            for(int i=0;i<m_ModeSprites.size();i++)
-                m_ModeSprites[i].setColor(sf::Color(255,255,255,4));
-        }
-        else
-            m_Background.setColor(sf::Color(128,128,128,255));
+        m_Background.setColor(sf::Color(128,128,128,255));
     }
     void ModeSelection::createMenu(sf::Vector2u WindowSize) {
         if(((float)WindowSize.x/(float)WindowSize.y)<1)
@@ -52,18 +44,11 @@ namespace Menus {
     void ModeSelection::update(sf::Time Delta,bool Foreground) {
         m_Render.clear();
         if(Foreground) {
-        if(m_Background.getColor().a<255&&Delta.asSeconds()<.1) m_Background.setColor(sf::Color(128,128,128,std::min(m_Background.getColor().a*(1+10*Delta.asSeconds()),255.f)));
-        else if(m_Title.getFillColor().a<255&&Delta.asSeconds()<.1) {
-            m_Title.setFillColor(sf::Color(255,255,255,std::min(m_Title.getFillColor().a*(1+20*Delta.asSeconds()),255.f)));
-            m_Line.setFillColor(sf::Color(255,255,255,std::min(m_Line.getFillColor().a*(1+20*Delta.asSeconds()),255.f)));
-            for(int i=0;i<m_ModeSprites.size();i++)
-                m_ModeSprites[i].setColor(sf::Color(255,255,255,std::min(m_ModeSprites[i].getColor().a*(1+20*Delta.asSeconds()),255.f)));
-        }
         m_Render.draw(m_Background);
         m_Render.draw(m_Title);
         m_Render.draw(m_Line);
-        m_Render.setView(m_ModeScroll.getView());
         m_ModeScroll.update(m_Manager->getInput());
+        m_Render.setView(m_ModeScroll.getView());
         for(int i=0;i<m_ModeSprites.size();i++) m_Render.draw(m_ModeSprites[i]);
         m_Render.setView(m_Render.getDefaultView());
         }

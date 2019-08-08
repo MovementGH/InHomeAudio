@@ -14,7 +14,7 @@ struct NetworkDevice {
 
 class NetworkDiscovery {
 public:
-    NetworkDiscovery(bool Discoverable=true);
+    NetworkDiscovery(bool Discoverable=false);
     ~NetworkDiscovery();
     
     void setDiscoverable(bool Discoverable);

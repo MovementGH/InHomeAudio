@@ -1,7 +1,7 @@
 #include "Loading.hpp"
 
 namespace Menus {
-    LoadingMenu::LoadingMenu(MenuManager* Manager):Menu(Manager),m_Loops(0),
+    LoadingMenu::LoadingMenu(MenuManager* Manager,std::string MenuName):Menu(Manager,MenuName),m_Loops(0),
     m_LoadingTexture(Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Loading.png")) {
         m_Loading.setTexture(m_LoadingTexture);
         m_Loading.setOrigin(m_LoadingTexture.getSize().x/2,m_LoadingTexture.getSize().y/2);
@@ -18,7 +18,7 @@ namespace Menus {
             m_Manager->popMenu();
             return;
         }
-        else if(m_Loops==1)  m_Manager->pushMenu(new Menus::ModeSelection(m_Manager));
+        else if(m_Loops==1)  m_Manager->pushMenu(new Menus::TitleBar(m_Manager),isMobile());
         if(m_Loops<2) m_Loops++;
         }
         m_Render.clear();

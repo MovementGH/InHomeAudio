@@ -2,13 +2,14 @@
 #define Loading_hpp
 #include <SFML/Graphics.hpp>
 #include "../Menu.hpp"
-#include "ModeSelection.hpp"
+#include "../Platform.hpp"
 #include "../ResourcePath.hpp"
+#include "TitleBar.hpp"
 
 namespace Menus {
     class LoadingMenu : public Menu {
     public:
-        LoadingMenu(MenuManager* Manager);
+        LoadingMenu(MenuManager* Manager,std::string MenuName="");
         virtual void createMenu(sf::Vector2u WindowSize) override;
         virtual void update(sf::Time Delta,bool Foreground) override;
         virtual void onGainFocus() override;
