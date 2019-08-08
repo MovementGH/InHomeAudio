@@ -12,12 +12,12 @@ public:
     
     bool isClicking();
     sf::Vector2i getMousePos();
-    sf::Int16 getScrollSpeed();
+    float getScrollSpeed();
 private:
     bool m_IsClicking;
     int m_ScrollTime;
     sf::Vector2i m_MousePos;
-    sf::Int16 m_ScrollSpeed;
+    float m_ScrollSpeed;
 };
 class AssetBase{
 public:
@@ -25,6 +25,7 @@ public:
     virtual void* getAsset()=0;
     std::string m_Filename;
 };
+
 template <typename AssetType>
 class Asset : public AssetBase {
 public:
@@ -48,6 +49,7 @@ public:
 protected:
     std::vector<std::unique_ptr<AssetBase>> m_Assets;
 };
+
 class Button {
 public:
     template <typename Entity> Button(InputManager& Input,Entity& Binder) : m_Input(Input) { Bind(Binder); }
@@ -65,6 +67,22 @@ private:
     
     InputManager& m_Input;
 };
+class ScrollArea {
+public:
+    ScrollArea();
+    
+    void setArea(sf::FloatRect Area,sf::Vector2u WindowSize);
+    void setHeight(float Height);
+    void update(InputManager& Input);
+    
+    sf::View& getView();
+protected:
+    sf::View m_View;
+    sf::FloatRect m_Area;
+    float m_EndPos;
+    float m_Scroll;
+};
+
 
 
 #endif /* UI_hpp */

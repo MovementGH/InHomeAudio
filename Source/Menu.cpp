@@ -1,5 +1,6 @@
 #include "Menu.hpp"
 Menu::Menu(MenuManager* Manager):m_Manager(Manager){}
+void Menu::createMenu(sf::Vector2u WindowSize){}
 void Menu::onEvent(sf::Event& Event){}
 void Menu::onGainFocus(){}
 void Menu::onForeground(sf::Time Delta){}
@@ -12,6 +13,7 @@ void MenuManager::run(Menu* Main) {
     pushMenu(Main);
     sf::Clock FrameClock;
     while(m_Window.isOpen()) {
+        m_Input.Reset();
         m_Pushed=false;
         sf::Event Event;
         while(m_Window.pollEvent(Event)) {
@@ -24,6 +26,11 @@ void MenuManager::run(Menu* Main) {
                 m_HasFocus=true;
                 m_MenuStack[m_MenuStack.size()-1]->onGainFocus();
             }
+            if(Event.type==sf::Event::Resized) {
+                sf::View View({0,0,(float)Event.size.width,(float)Event.size.height});
+                m_Window.setView(View);
+                for(int i=0;i<m_MenuStack.size();i++) m_MenuStack[i]->createMenu({Event.size.width,Event.size.height});
+            }
             m_Input.Event(Event);
             m_MenuStack[m_MenuStack.size()-1]->onEvent(Event);
             if(m_Pushed) break;
@@ -32,8 +39,8 @@ void MenuManager::run(Menu* Main) {
             m_Window.clear();
             sf::Time Delta=FrameClock.getElapsedTime();
             FrameClock.restart();
-            for(int i=0;i<m_MenuStack.size()-(m_HasFocus?1:0);i++) m_MenuStack[i]->onBackground(Delta);
-            if(m_HasFocus) m_MenuStack[m_MenuStack.size()-1]->onForeground(Delta);
+            for(int i=0;i<m_MenuStack.size()-1;i++) m_MenuStack[i]->onBackground(Delta);
+            m_MenuStack[m_MenuStack.size()-1]->onForeground(Delta);
             m_Window.display();
         }
         if(m_HasFocus==false) sf::sleep(sf::seconds(1));
@@ -42,6 +49,7 @@ void MenuManager::run(Menu* Main) {
 void MenuManager::pushMenu(Menu* Menu) {
     if(m_MenuStack.size()) m_MenuStack[m_MenuStack.size()-1]->onLoseFocus();
     m_MenuStack.push_back(Menu);
+    m_MenuStack[m_MenuStack.size()-1]->createMenu(m_Window.getSize());
     m_Pushed=true;
 }
 void MenuManager::popMenu() {
@@ -54,3 +62,4 @@ void MenuManager::popMenu() {
 }
 AssetManager& MenuManager::getAssets(){return m_Assets;}
 sf::RenderWindow& MenuManager::getWindow(){return m_Window;}
+InputManager& MenuManager::getInput(){return m_Input;}

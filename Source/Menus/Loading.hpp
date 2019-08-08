@@ -9,9 +9,10 @@ namespace Menus {
     class LoadingMenu : public Menu {
     public:
         LoadingMenu(MenuManager* Manager);
-        virtual void onForeground(sf::Time Delta);
-        virtual void onBackground(sf::Time Delta);
-        virtual void onGainFocus();
+        virtual void createMenu(sf::Vector2u WindowSize) override;
+        virtual void onForeground(sf::Time Delta) override;
+        virtual void onBackground(sf::Time Delta) override;
+        virtual void onGainFocus() override;
     protected:
         int m_Loops;
         sf::Sprite m_Loading;

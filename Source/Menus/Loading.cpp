@@ -5,10 +5,12 @@ namespace Menus {
     m_LoadingTexture(Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Loading.png")) {
         m_Loading.setTexture(m_LoadingTexture);
         m_Loading.setOrigin(m_LoadingTexture.getSize().x/2,m_LoadingTexture.getSize().y/2);
-        m_Loading.setPosition(m_Manager->getWindow().getSize().x/2,(float)m_Manager->getWindow().getSize().y*.4f);
+    }
+    void LoadingMenu::createMenu(sf::Vector2u WindowSize) {
+        m_Loading.setPosition(WindowSize.x/2,(float)WindowSize.y*.4f);
     }
     void LoadingMenu::onGainFocus() {
-        if(m_Loops>=1) m_Loops=-1;
+        if(m_Loops>=2) m_Loops=-1;
     }
     void LoadingMenu::onForeground(sf::Time Delta) {
         if(m_Loops==-1) {

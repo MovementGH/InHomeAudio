@@ -10,6 +10,8 @@ class Menu {
 public:
     Menu(MenuManager* Manager);
     
+    virtual void createMenu(sf::Vector2u WindowSize);
+    
     virtual void onEvent(sf::Event& Event);
     virtual void onForeground(sf::Time Delta);
     virtual void onLoseFocus();
@@ -32,6 +34,7 @@ public:
     
     AssetManager& getAssets();
     sf::RenderWindow& getWindow();
+    InputManager& getInput();
 protected:
     std::vector<Menu*> m_MenuStack;
     sf::RenderWindow& m_Window;
