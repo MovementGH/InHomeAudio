@@ -18,6 +18,7 @@ namespace Menus {
     protected:
         sf::Sprite m_Background;
         sf::Text m_Title;
+        sf::RectangleShape m_Line;
         std::vector<sf::Sprite> m_ModeSprites;
         ScrollArea m_ModeScroll;
         
