@@ -12,16 +12,17 @@ namespace Menus {
     void LoadingMenu::onGainFocus() {
         if(m_Loops>=2) m_Loops=-1;
     }
-    void LoadingMenu::onForeground(sf::Time Delta) {
+    void LoadingMenu::update(sf::Time Delta,bool Foreground) {
+        if(Foreground) {
         if(m_Loops==-1) {
             m_Manager->popMenu();
             return;
         }
-        m_Manager->getWindow().draw(m_Loading);
-        if(m_Loops==1)  m_Manager->pushMenu(new Menus::ModeSelection(m_Manager));
+        else if(m_Loops==1)  m_Manager->pushMenu(new Menus::ModeSelection(m_Manager));
         if(m_Loops<2) m_Loops++;
-    }
-    void LoadingMenu::onBackground(sf::Time Delta) {
-        m_Manager->getWindow().draw(m_Loading);
+        }
+        m_Render.clear();
+        m_Render.draw(m_Loading);
+        m_Render.display();
     }
 }

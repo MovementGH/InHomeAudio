@@ -1,12 +1,22 @@
 #include "Menu.hpp"
-Menu::Menu(MenuManager* Manager):m_Manager(Manager){}
-void Menu::createMenu(sf::Vector2u WindowSize){}
+Menu::Menu(MenuManager* Manager):m_Manager(Manager){
+}
+void Menu::createMenu(sf::Vector2u WindowSize) {
+    m_Render.create(WindowSize.x,WindowSize.y);
+    m_RenderSprite.setPosition(m_Render.getSize().x/2,m_Render.getSize().y/2);
+    m_RenderSprite.setOrigin(m_Render.getSize().x/2,m_Render.getSize().y/2);
+    m_RenderSprite.setTexture(m_Render.getTexture());
+    m_RenderSprite.setTextureRect({0,0,(int)m_Render.getSize().x,(int)m_Render.getSize().y});
+}
 void Menu::onEvent(sf::Event& Event){}
 void Menu::onGainFocus(){}
-void Menu::onForeground(sf::Time Delta){}
-void Menu::onBackground(sf::Time Delta){}
+void Menu::update(sf::Time Delta,bool Foreground){}
 void Menu::onLoseFocus(){}
 void Menu::onExit(){}
+
+sf::Sprite& Menu::getRender() {
+    return m_RenderSprite;
+}
 
 MenuManager::MenuManager(sf::RenderWindow& Window):m_Window(Window),m_HasFocus(true){}
 void MenuManager::run(Menu* Main) {
@@ -29,7 +39,10 @@ void MenuManager::run(Menu* Main) {
             if(Event.type==sf::Event::Resized) {
                 sf::View View({0,0,(float)Event.size.width,(float)Event.size.height});
                 m_Window.setView(View);
-                for(int i=0;i<m_MenuStack.size();i++) m_MenuStack[i]->createMenu({Event.size.width,Event.size.height});
+                for(int i=0;i<m_MenuStack.size();i++) {
+                    m_MenuStack[i]->Menu::createMenu({Event.size.width,Event.size.height});
+                    m_MenuStack[i]->createMenu({Event.size.width,Event.size.height});
+                }
             }
             m_Input.Event(Event);
             m_MenuStack[m_MenuStack.size()-1]->onEvent(Event);
@@ -39,8 +52,10 @@ void MenuManager::run(Menu* Main) {
             m_Window.clear();
             sf::Time Delta=FrameClock.getElapsedTime();
             FrameClock.restart();
-            for(int i=0;i<m_MenuStack.size()-1;i++) m_MenuStack[i]->onBackground(Delta);
-            m_MenuStack[m_MenuStack.size()-1]->onForeground(Delta);
+            for(int i=0;i<m_MenuStack.size();i++) {
+                m_MenuStack[i]->update(Delta,i==m_MenuStack.size()-1);
+                m_Window.draw(m_MenuStack[i]->getRender());
+            }
             m_Window.display();
         }
         if(m_HasFocus==false) sf::sleep(sf::seconds(1));
@@ -50,6 +65,7 @@ void MenuManager::pushMenu(Menu* Menu) {
     if(m_MenuStack.size()) m_MenuStack[m_MenuStack.size()-1]->onLoseFocus();
     m_MenuStack.push_back(Menu);
     m_MenuStack[m_MenuStack.size()-1]->createMenu(m_Window.getSize());
+    m_MenuStack[m_MenuStack.size()-1]->Menu::createMenu(m_Window.getSize());
     m_Pushed=true;
 }
 void MenuManager::popMenu() {

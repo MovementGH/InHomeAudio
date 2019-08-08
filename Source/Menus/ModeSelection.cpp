@@ -49,7 +49,9 @@ namespace Menus {
     void ModeSelection::onEvent(sf::Event& Event) {
         if(Event.type==sf::Event::KeyPressed&&Event.key.code==sf::Keyboard::Escape) m_Manager->popMenu();
     }
-    void ModeSelection::onForeground(sf::Time Delta) {
+    void ModeSelection::update(sf::Time Delta,bool Foreground) {
+        m_Render.clear();
+        if(Foreground) {
         if(m_Background.getColor().a<255&&Delta.asSeconds()<.1) m_Background.setColor(sf::Color(128,128,128,std::min(m_Background.getColor().a*(1+10*Delta.asSeconds()),255.f)));
         else if(m_Title.getFillColor().a<255&&Delta.asSeconds()<.1) {
             m_Title.setFillColor(sf::Color(255,255,255,std::min(m_Title.getFillColor().a*(1+20*Delta.asSeconds()),255.f)));
@@ -57,17 +59,15 @@ namespace Menus {
             for(int i=0;i<m_ModeSprites.size();i++)
                 m_ModeSprites[i].setColor(sf::Color(255,255,255,std::min(m_ModeSprites[i].getColor().a*(1+20*Delta.asSeconds()),255.f)));
         }
-        m_Manager->getWindow().draw(m_Background);
-        m_Manager->getWindow().draw(m_Title);
-        m_Manager->getWindow().draw(m_Line);
-        sf::View OldView=m_Manager->getWindow().getView();
-        m_Manager->getWindow().setView(m_ModeScroll.getView());
+        m_Render.draw(m_Background);
+        m_Render.draw(m_Title);
+        m_Render.draw(m_Line);
+        m_Render.setView(m_ModeScroll.getView());
         m_ModeScroll.update(m_Manager->getInput());
-        for(int i=0;i<m_ModeSprites.size();i++)
-            m_Manager->getWindow().draw(m_ModeSprites[i]);
-        m_Manager->getWindow().setView(OldView);
-    }
-    void ModeSelection::onBackground(sf::Time Delta) {
-        m_Manager->getWindow().draw(m_Background);
+        for(int i=0;i<m_ModeSprites.size();i++) m_Render.draw(m_ModeSprites[i]);
+        m_Render.setView(m_Render.getDefaultView());
+        }
+        else m_Render.draw(m_Background);
+        m_Render.display();
     }
 }

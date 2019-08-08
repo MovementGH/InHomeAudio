@@ -11,15 +11,17 @@ public:
     Menu(MenuManager* Manager);
     
     virtual void createMenu(sf::Vector2u WindowSize);
+    virtual void update(sf::Time Delta,bool Foreground);
     
     virtual void onEvent(sf::Event& Event);
-    virtual void onForeground(sf::Time Delta);
     virtual void onLoseFocus();
-    virtual void onBackground(sf::Time Delta);
     virtual void onGainFocus();
     virtual void onExit();
     
+    sf::Sprite& getRender();
 protected:
+    sf::RenderTexture m_Render;
+    sf::Sprite m_RenderSprite;
     MenuManager* m_Manager;
 };
 

@@ -11,10 +11,9 @@ namespace Menus {
     public:
         ModeSelection(MenuManager* Manager);
         
-        virtual void createMenu(sf::Vector2u WindowSize);
-        virtual void onEvent(sf::Event& Event);
-        virtual void onForeground(sf::Time Delta);
-        virtual void onBackground(sf::Time Delta);
+        virtual void createMenu(sf::Vector2u WindowSize) override;
+        virtual void onEvent(sf::Event& Event) override;
+        virtual void update(sf::Time Delta,bool Foreground) override;
     protected:
         sf::Sprite m_Background;
         sf::Text m_Title;
@@ -25,7 +24,6 @@ namespace Menus {
         sf::Font& m_Font;
         sf::Texture& m_BackgroundTexture;
         sf::Texture& m_VoiceTexture;
-        
     };
 }
 
