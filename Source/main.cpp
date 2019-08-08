@@ -5,7 +5,7 @@
 #endif
 #endif
 #include "Menu.hpp"
-#include "Loading.hpp"
+#include "Menus/Loading.hpp"
 
 int main() {
     sf::RenderWindow Window;

@@ -1,9 +1,9 @@
 #ifndef Loading_hpp
 #define Loading_hpp
 #include <SFML/Graphics.hpp>
-#include "Menu.hpp"
+#include "../Menu.hpp"
 #include "ModeSelection.hpp"
-#include "ResourcePath.hpp"
+#include "../ResourcePath.hpp"
 
 namespace Menus {
     class LoadingMenu : public Menu {

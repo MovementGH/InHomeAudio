@@ -1,9 +1,9 @@
 #ifndef ModeSelection_hpp
 #define ModeSelection_hpp
 #include <SFML/Graphics.hpp>
-#include "Platform.hpp"
-#include "Menu.hpp"
-#include "ResourcePath.hpp"
+#include "../Platform.hpp"
+#include "../Menu.hpp"
+#include "../ResourcePath.hpp"
 
 namespace Menus {
     class ModeSelection : public Menu {
