@@ -5,11 +5,14 @@
 #endif
 #endif
 #include "Menu.hpp"
+#include "Loading.hpp"
 
 int main() {
     sf::RenderWindow Window;
     Window.create(sf::VideoMode::getDesktopMode(),"In Home Audio");
+    Window.setVerticalSyncEnabled(true);
     MenuManager Manager(Window);
+    Manager.run(new Menus::LoadingMenu(&Manager));
     
     return EXIT_SUCCESS;
     

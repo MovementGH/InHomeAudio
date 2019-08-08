@@ -30,10 +30,13 @@ public:
     void pushMenu(Menu* Menu);
     void popMenu();
     
+    AssetManager& getAssets();
+    sf::RenderWindow& getWindow();
 protected:
     std::vector<Menu*> m_MenuStack;
     sf::RenderWindow& m_Window;
     InputManager m_Input;
+    AssetManager m_Assets;
     bool m_Pushed,m_HasFocus;
 };
 

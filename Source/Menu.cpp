@@ -33,7 +33,7 @@ void MenuManager::run(Menu* Main) {
             sf::Time Delta=FrameClock.getElapsedTime();
             FrameClock.restart();
             for(int i=0;i<m_MenuStack.size()-(m_HasFocus?1:0);i++) m_MenuStack[i]->onBackground(Delta);
-            if(m_HasFocus) m_MenuStack[m_MenuStack.size()-1]->onForeground(FrameClock.getElapsedTime());
+            if(m_HasFocus) m_MenuStack[m_MenuStack.size()-1]->onForeground(Delta);
             m_Window.display();
         }
         if(m_HasFocus==false) sf::sleep(sf::seconds(1));
@@ -52,3 +52,5 @@ void MenuManager::popMenu() {
     if(m_MenuStack.size()==0) m_Window.close();
     m_Pushed=true;
 }
+AssetManager& MenuManager::getAssets(){return m_Assets;}
+sf::RenderWindow& MenuManager::getWindow(){return m_Window;}

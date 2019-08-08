@@ -42,6 +42,7 @@ sf::Vector2i InputManager::getMousePos() {
 sf::Int16 InputManager::getScrollSpeed() {
     return m_ScrollSpeed;
 }
+AssetBase::~AssetBase(){}
 bool Button::Hovering() {
     sf::Vector2i MousePos=m_Input.getMousePos();
     return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;

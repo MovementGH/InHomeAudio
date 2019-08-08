@@ -14,9 +14,12 @@ std::string getComputerName() {
 #elif IOS
 //iOS
 #define MOBILE
+#include <unistd.h>
 #define PLATFORM Platform::iOS
 std::string getComputerName() {
-    return "Unknown";
+    char name[50];
+    if(gethostname(name,50)) return "Unknown";
+    return name;
 }
 //End iOS
 #else
