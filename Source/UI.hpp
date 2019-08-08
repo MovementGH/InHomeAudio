@@ -22,6 +22,7 @@ private:
 class AssetBase{
 public:
     virtual ~AssetBase();
+    AssetBase(std::string Filename);
     virtual void* getAsset()=0;
     std::string m_Filename;
 };
@@ -30,12 +31,11 @@ template <typename AssetType>
 class Asset : public AssetBase {
 public:
     virtual ~Asset(){}
-    Asset(std::string Filename) {
+    Asset(std::string Filename) : AssetBase(Filename) {
         m_Asset.loadFromFile(Filename);
     }
     virtual void* getAsset() override { return &m_Asset; }
     AssetType m_Asset;
-    std::string m_Filename;
 };
 class AssetManager {
 public:

@@ -43,6 +43,7 @@ float InputManager::getScrollSpeed() {
     return -m_ScrollSpeed;
 }
 AssetBase::~AssetBase(){}
+AssetBase::AssetBase(std::string Filename):m_Filename(Filename){}
 bool Button::Hovering() {
     sf::Vector2i MousePos=m_Input.getMousePos();
     return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;

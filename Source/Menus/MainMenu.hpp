@@ -2,6 +2,8 @@
 #define MainMenu_hpp
 #include <SFML/Graphics.hpp>
 #include "../Menu.hpp"
+#include "../Platform.hpp"
+#include "../ResourcePath.hpp"
 
 namespace Menus {
     class MainMenu : public Menu {
@@ -13,7 +15,9 @@ namespace Menus {
         virtual void update(sf::Time Delta,bool Foreground) override;
         
     protected:
+        std::vector<sf::Sprite> m_DeviceSprites;
         
+        std::vector<sf::Texture*> m_PlatformIcons;
     };
 }
 
