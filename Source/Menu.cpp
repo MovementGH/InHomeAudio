@@ -39,11 +39,15 @@ void MenuManager::run(Menu* Main) {
                 m_MenuStack[m_MenuStack.size()-1]->onGainFocus();
             }
             if(Event.type==sf::Event::Resized) {
+                bool Limited=false;
                 if(Event.size.width<500)
-                    Event.size.width=500;
+                    Event.size.width=500,
+                    Limited=true;
                 if(Event.size.height<150)
-                    Event.size.height=150;
-                m_Window.setSize({Event.size.width,Event.size.height});
+                    Event.size.height=150,
+                    Limited=true;
+                if(Limited)
+                    m_Window.setSize({Event.size.width,Event.size.height});
                 sf::View View({0,0,(float)Event.size.width,(float)Event.size.height});
                 m_Window.setView(View);
                 for(int i=0;i<m_MenuStack.size();i++) {
