@@ -14,13 +14,18 @@ namespace Menus {
         
         virtual void createMenu(sf::Vector2u WindowSize) override;
         virtual void onEvent(sf::Event& Event) override;
+        virtual void render() override;
         virtual void update(sf::Time Delta,bool Foreground) override;
         
+        bool updateDevices();
     protected:
         std::vector<sf::Sprite> m_DeviceSprites;
+        std::vector<sf::Text> m_DeviceNames,m_DeviceModes;
+        std::vector<sf::RectangleShape> m_DeviceOutlines;
         ScrollArea m_DeviceScroll;
         
         std::vector<sf::Texture*> m_PlatformIcons;
+        sf::Font& m_Font;
     };
 }
 

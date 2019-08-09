@@ -15,6 +15,7 @@ public:
     
     virtual void createMenu(sf::Vector2u WindowSize);
     virtual void update(sf::Time Delta,bool Foreground);
+    virtual void render();
     
     virtual void onLaunch();
     virtual void onEvent(sf::Event& Event);

@@ -13,6 +13,7 @@ namespace Menus {
         
         virtual void createMenu(sf::Vector2u WindowSize) override;
         virtual void onLaunch() override;
+        virtual void render() override;
         virtual void update(sf::Time Delta,bool Foreground) override;
     protected:
         sf::Sprite m_Background;

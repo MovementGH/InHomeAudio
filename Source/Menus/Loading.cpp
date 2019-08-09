@@ -8,21 +8,21 @@ namespace Menus {
     }
     void LoadingMenu::createMenu(sf::Vector2u WindowSize) {
         m_Loading.setPosition(WindowSize.x/2,(float)WindowSize.y*.4f);
+        m_Render.clear();
+        m_Render.draw(m_Loading);
+        m_Render.display();
     }
     void LoadingMenu::onGainFocus() {
         if(m_Loops>=2) m_Loops=-1;
     }
     void LoadingMenu::update(sf::Time Delta,bool Foreground) {
         if(Foreground) {
-        if(m_Loops==-1) {
-            m_Manager->popMenu();
-            return;
+            if(m_Loops==-1) {
+                m_Manager->popMenu();
+                return;
+            }
+            else if(m_Loops==1)  m_Manager->pushMenu(new Menus::TitleBar(m_Manager),isMobile());
+            if(m_Loops<2) m_Loops++;
         }
-        else if(m_Loops==1)  m_Manager->pushMenu(new Menus::TitleBar(m_Manager),isMobile());
-        if(m_Loops<2) m_Loops++;
-        }
-        m_Render.clear();
-        m_Render.draw(m_Loading);
-        m_Render.display();
     }
 }

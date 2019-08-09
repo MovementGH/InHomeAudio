@@ -10,6 +10,7 @@ void Menu::createRender(sf::Vector2u WindowSize,bool Pop,sf::Vector2u StartPos) 
     if(Pop) m_RenderSprite.setScale(.1,.1);
 }
 void Menu::onLaunch(){}
+void Menu::render(){}
 void Menu::createMenu(sf::Vector2u WindowSize){}
 void Menu::onEvent(sf::Event& Event){}
 void Menu::onGainFocus(){}

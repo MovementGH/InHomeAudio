@@ -25,13 +25,10 @@ namespace Menus {
         m_Background.setScale(BGScale,BGScale);
         m_Title.setPosition(WindowSize.x/2,isMobile()?40:25);
         m_Line.setSize({WindowSize.x+0.f,3});
+        render();
     }
-    void TitleBar::update(sf::Time Delta,bool Foreground) {
+    void TitleBar::render() {
         std::vector<Menu*>& Stack=m_Manager->getMenuStack();
-        if(Stack[Stack.size()-1]==this) {
-            m_Manager->popMenu();
-            return;
-        }
         m_Title.setString(Stack[Stack.size()-1]->getName());
         m_Title.setOrigin(m_Title.getLocalBounds().width/2,0);
         m_Render.clear(sf::Color::Transparent);
@@ -39,5 +36,10 @@ namespace Menus {
         m_Render.draw(m_Title);
         m_Render.draw(m_Line);
         m_Render.display();
+    }
+    void TitleBar::update(sf::Time Delta,bool Foreground) {
+        std::vector<Menu*>& Stack=m_Manager->getMenuStack();
+        if(m_Title.getString()!=sf::String(Stack[Stack.size()-1]->getName())) render();
+        if(Stack[Stack.size()-1]==this) m_Manager->popMenu();
     }
 }
