@@ -112,7 +112,7 @@ namespace Menus {
                 m_CreateSprite.scale(.98,.98),
                 ButtonChanged=true;
             if(m_CreateButton.Clicked())
-                m_Manager->pushMenu(new ModeSelection(m_Manager),true,(sf::Vector2u)m_CreateSprite.getPosition());
+                m_Manager->pushMenu(new ModeSelection(m_Manager));
             
             m_Render.setView(m_DeviceScroll.getView());
             for(int i=0;i<m_DeviceButtons.size();i++) {

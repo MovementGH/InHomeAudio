@@ -21,7 +21,7 @@ namespace Menus {
                 m_Manager->popMenu();
                 return;
             }
-            else if(m_Loops==1)  m_Manager->pushMenu(new Menus::TitleBar(m_Manager),isMobile());
+            else if(m_Loops==1) m_Manager->pushMenu(new Menus::TitleBar(m_Manager));
             if(m_Loops<2) m_Loops++;
         }
     }
