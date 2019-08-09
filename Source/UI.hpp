@@ -5,7 +5,7 @@
 #include <iostream>
 class InputManager {
 public:
-    InputManager();
+    InputManager(sf::RenderWindow& Window);
     
     void Event(sf::Event& Event);
     void Reset();
@@ -13,11 +13,13 @@ public:
     bool isClicking();
     sf::Vector2i getMousePos();
     float getScrollSpeed();
+    sf::RenderWindow& getWindow();
 private:
-    bool m_IsClicking;
+    bool m_IsClicking,m_ResetMouse;
     int m_ScrollTime;
     sf::Vector2i m_MousePos;
     float m_ScrollSpeed;
+    sf::RenderWindow& m_Window;
 };
 class AssetBase{
 public:
@@ -52,10 +54,9 @@ protected:
 
 class Button {
 public:
-    template <typename Entity> Button(InputManager& Input,Entity& Binder) : m_Input(Input) { Bind(Binder); }
-    template <typename Entity> void Bind(Entity& Binder) { m_Area=Binder.getGlobalBounds();
-        std::cout<<"Bound to "<<m_Area.left<<" "<<m_Area.width<<" "<<m_Area.top<<" "<<m_Area.height<<std::endl;
-    };
+    Button(InputManager& Input);
+    template <typename Entity> Button(InputManager& Input,Entity& Binder) : m_Input(Input),m_IsClicked(false) { Bind(Binder); }
+    template <typename Entity> void Bind(Entity& Binder) { m_Area=Binder.getGlobalBounds(); };
     
     bool Hovering();
     bool Clicking();

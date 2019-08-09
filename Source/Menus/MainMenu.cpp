@@ -1,24 +1,37 @@
 #include "MainMenu.hpp"
 namespace Menus {
     MainMenu::MainMenu(MenuManager* Manager,std::string MenuName):Menu(Manager,MenuName),
-        m_Font(m_Manager->getAssets().getAsset<sf::Font>(resourcePath()+"sansation.ttf")) {
+        m_Font(m_Manager->getAssets().getAsset<sf::Font>(resourcePath()+"sansation.ttf")),
+        m_ArrowTexture(m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Arrow.png")),
+        m_CreateTexture(m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Create.png")),
+        m_CreateButton(m_Manager->getInput()) {
         m_PlatformIcons.push_back(&m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Windows.png"));
         m_PlatformIcons.push_back(&m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Mac.png"));
         m_PlatformIcons.push_back(&m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"Linux.png"));
         m_PlatformIcons.push_back(&m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"iOS.png"));
+        m_CreateSprite.setTexture(m_CreateTexture);
+        m_CreateSprite.setOrigin(m_CreateTexture.getSize().x/2,m_CreateTexture.getSize().y/2);
     }
     void MainMenu::createMenu(sf::Vector2u WindowSize) {
         m_Manager->getDiscovery().setDiscoverable(true);
+        if(isMobile())
+            m_CreateSprite.setPosition(WindowSize.x-60,75),
+            m_CreateSprite.setScale(.70,.70);
+        else
+            m_CreateSprite.setPosition(WindowSize.x-60,55);
+        m_CreateButton.Bind(m_CreateSprite);
         m_DeviceScroll.setArea({0,120,WindowSize.x+0.f,WindowSize.y-120.f},WindowSize);
         m_DeviceOutlines.clear();
-        updateDevices();
-        render();
+        if(m_Manager->getMenuStack()[m_Manager->getMenuStack().size()-1]==this)
+            updateDevices(),
+            render();
     }
     void MainMenu::onEvent(sf::Event& Event) {
         if(Event.type==sf::Event::KeyPressed&&Event.key.code==sf::Keyboard::Escape) m_Manager->popMenu();
     }
     void MainMenu::render() {
         m_Render.clear(sf::Color::Transparent);
+        m_Render.draw(m_CreateSprite);
         m_DeviceScroll.update(m_Manager->getInput());
         m_Render.setView(m_DeviceScroll.getView());
         for(int i=0;i<m_DeviceOutlines.size();i++) {
@@ -26,6 +39,7 @@ namespace Menus {
             m_Render.draw(m_DeviceSprites[i]);
             m_Render.draw(m_DeviceNames[i]);
             m_Render.draw(m_DeviceModes[i]);
+            m_Render.draw(m_DeviceArrows[i]);
         }
         m_Render.setView(m_Render.getDefaultView());
         m_Render.display();
@@ -40,6 +54,7 @@ namespace Menus {
             m_DeviceSprites.resize(Devices.size());
             m_DeviceNames.resize(Devices.size());
             m_DeviceModes.resize(Devices.size());
+            m_DeviceArrows.resize(Devices.size());
             m_DeviceScroll.setHeight(m_DeviceSprites.size()*275);
             for(int i=0;i<m_DeviceSprites.size();i++) {
                 m_DeviceOutlines[i].setSize({m_Manager->getWindow().getSize().x+0.f,275});
@@ -53,7 +68,7 @@ namespace Menus {
                 m_DeviceNames[i].setCharacterSize(36);
                 m_DeviceNames[i].setString(Devices[i].name);
                 int Times=0;
-                while(m_DeviceNames[i].getLocalBounds().width>m_Manager->getWindow().getSize().x-375&&Times<100)
+                while(m_DeviceNames[i].getLocalBounds().width>m_Manager->getWindow().getSize().x-385&&Times<100)
                     m_DeviceNames[i].setString(m_DeviceNames[i].getString().toAnsiString().substr(0,m_DeviceNames[i].getString().getSize()-4)+"..."),Times++;
                 m_DeviceNames[i].setPosition(10300,133+i*275);
                 m_DeviceNames[i].setOrigin(0,m_DeviceNames[i].getLocalBounds().height);
@@ -61,12 +76,43 @@ namespace Menus {
                 m_DeviceModes[i].setCharacterSize(24);
                 m_DeviceModes[i].setString("Voice Chat");
                 m_DeviceModes[i].setPosition(10300,143+i*275);
+                m_DeviceArrows[i].setTexture(m_ArrowTexture);
+                m_DeviceArrows[i].setPosition(m_Manager->getWindow().getSize().x+10000,137.5+i*275);
+                m_DeviceArrows[i].setOrigin(m_ArrowTexture.getSize().x,m_ArrowTexture.getSize().y/2);
             }
             return true;
         }
         return false;
     }
+    void MainMenu::onLoseFocus() {
+        if(m_Manager->getMenuStack()[m_Manager->getMenuStack().size()-1]!=this) {
+            m_Render.clear(sf::Color::Transparent);
+            //Bug on iOS when rendering render textures that they dont go transparent
+            m_CreateSprite.move(100000,0);
+            m_Render.draw(m_CreateSprite);
+            m_CreateSprite.move(-100000,0);
+            //End bug
+            m_Render.display();
+        }
+    }
+    void MainMenu::onGainFocus() {
+        m_DeviceOutlines.clear();
+        updateDevices();
+        render();
+    }
     void MainMenu::update(sf::Time Delta,bool Foreground) {
-        if(Foreground&&(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0)) render();
+        if(Foreground) {
+            bool ButtonChanged=false;
+            if(m_CreateButton.Hovering()&&m_CreateSprite.getScale().x<1.1*(isMobile()?.7:1))
+                m_CreateSprite.scale(1.02,1.02),
+                ButtonChanged=true;
+            if(m_CreateButton.Hovering()==false&&m_CreateSprite.getScale().x>(isMobile()?.7:1))
+                m_CreateSprite.scale(.98,.98),
+                ButtonChanged=true;
+            if(m_CreateButton.Clicked())
+                m_Manager->pushMenu(new ModeSelection(m_Manager),true,(sf::Vector2u)m_CreateSprite.getPosition());
+            
+            if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
+        }
     }
 }

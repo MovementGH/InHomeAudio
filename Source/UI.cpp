@@ -1,5 +1,5 @@
 #include "UI.hpp"
-InputManager::InputManager() : m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0), m_ScrollTime(0) {
+InputManager::InputManager(sf::RenderWindow& Window) : m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0), m_ScrollTime(0), m_ResetMouse(false), m_Window(Window) {
     
 }
 void InputManager::Event(sf::Event& Event) {
@@ -18,8 +18,7 @@ void InputManager::Event(sf::Event& Event) {
             if(m_ScrollTime<5)
                 m_MousePos={Event.touch.x,Event.touch.y},
                 m_IsClicking=true;
-            else
-                m_MousePos={-1,-1};
+            else m_MousePos={-1,-1};
             m_ScrollTime=0;
         }
         if(Event.type==sf::Event::TouchMoved)
@@ -31,7 +30,12 @@ void InputManager::Event(sf::Event& Event) {
 void InputManager::Reset() {
     if(isMobile()) m_ScrollSpeed*=.95;
     else m_ScrollSpeed=0;
-    if(isMobile()) m_IsClicking=false;
+    if(m_ResetMouse)
+        m_ResetMouse=false,
+        m_MousePos={-1,-1};
+    if(isMobile()&&m_IsClicking)
+        m_ResetMouse=true,
+        m_IsClicking=false;
 }
 bool InputManager::isClicking() {
     return m_IsClicking;
@@ -42,8 +46,12 @@ sf::Vector2i InputManager::getMousePos() {
 float InputManager::getScrollSpeed() {
     return -m_ScrollSpeed;
 }
+sf::RenderWindow& InputManager::getWindow(){return m_Window;}
 AssetBase::~AssetBase(){}
 AssetBase::AssetBase(std::string Filename):m_Filename(Filename){}
+Button::Button(InputManager& Input) : m_Input(Input),m_IsClicked(false) {
+    
+}
 bool Button::Hovering() {
     sf::Vector2i MousePos=m_Input.getMousePos();
     return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;

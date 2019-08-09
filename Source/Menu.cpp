@@ -20,7 +20,7 @@ void Menu::onExit(){}
 std::string Menu::getName() { return m_Name; }
 sf::Sprite& Menu::getRender() { return m_RenderSprite; }
 
-MenuManager::MenuManager(sf::RenderWindow& Window):m_Window(Window),m_HasFocus(true){}
+MenuManager::MenuManager(sf::RenderWindow& Window):m_Window(Window),m_Input(Window),m_HasFocus(true){}
 void MenuManager::run(Menu* Main) {
     pushMenu(Main);
     sf::Clock FrameClock;
@@ -29,7 +29,9 @@ void MenuManager::run(Menu* Main) {
         m_Pushed=false;
         sf::Event Event;
         while(m_Window.pollEvent(Event)) {
-            if(Event.type==sf::Event::Closed) m_Window.close();
+            if(Event.type==sf::Event::Closed) {
+                while(m_MenuStack.size()) popMenu();
+            }
             if(Event.type==sf::Event::LostFocus) {
                 m_HasFocus=false;
                 m_MenuStack[m_MenuStack.size()-1]->onLoseFocus();
@@ -40,8 +42,8 @@ void MenuManager::run(Menu* Main) {
             }
             if(Event.type==sf::Event::Resized) {
                 bool Limited=false;
-                if(Event.size.width<500)
-                    Event.size.width=500,
+                if(Event.size.width<550)
+                    Event.size.width=550,
                     Limited=true;
                 if(Event.size.height<150)
                     Event.size.height=150,
@@ -56,7 +58,7 @@ void MenuManager::run(Menu* Main) {
                 }
             }
             m_Input.Event(Event);
-            m_MenuStack[m_MenuStack.size()-1]->onEvent(Event);
+            if(m_MenuStack.size()) m_MenuStack[m_MenuStack.size()-1]->onEvent(Event);
             if(m_Pushed) break;
         }
         if(!m_Pushed) {
@@ -77,12 +79,12 @@ void MenuManager::run(Menu* Main) {
 }
 void MenuManager::pushMenu(Menu* Menu,bool Pop,sf::Vector2u StartPos) {
     if(StartPos.x==0&&StartPos.y==0) StartPos=m_Window.getSize()/(unsigned)2;
-    if(m_MenuStack.size()) m_MenuStack[m_MenuStack.size()-1]->onLoseFocus();
     m_MenuStack.push_back(Menu);
     Menu->onLaunch();
     Menu->createRender(m_Window.getSize(),Pop,StartPos);
     Menu->createMenu(m_Window.getSize());
     Menu->onGainFocus();
+    if(m_MenuStack.size()>1) m_MenuStack[m_MenuStack.size()-2]->onLoseFocus();
     m_Pushed=true;
 }
 void MenuManager::popMenu() {
