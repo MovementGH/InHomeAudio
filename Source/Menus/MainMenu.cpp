@@ -13,7 +13,7 @@ namespace Menus {
         m_CreateSprite.setOrigin(m_CreateTexture.getSize().x/2,m_CreateTexture.getSize().y/2);
     }
     void MainMenu::createMenu(sf::Vector2u WindowSize) {
-        m_Manager->getDiscovery().setDiscoverable(true);
+//        m_Manager->getDiscovery().setDiscoverable(true); //TODO remove this
         if(isMobile())
             m_CreateSprite.setPosition(WindowSize.x-60,75),
             m_CreateSprite.setScale(.70,.70);
@@ -97,28 +97,26 @@ namespace Menus {
             render();
     }
     void MainMenu::update(sf::Time Delta,bool Foreground) {
-        if(Foreground) {
-            bool ButtonChanged=false;
-            if(m_CreateButton.Hovering()&&m_CreateSprite.getScale().x<1.1*(isMobile()?.7:1))
-                m_CreateSprite.scale(1.02,1.02),
+        bool ButtonChanged=false;
+        if(m_CreateButton.Hovering()&&m_CreateSprite.getScale().x<1.1*(isMobile()?.7:1))
+            m_CreateSprite.scale(1.02,1.02),
+            ButtonChanged=true;
+        if(m_CreateButton.Hovering()==false&&m_CreateSprite.getScale().x>(isMobile()?.7:1))
+            m_CreateSprite.scale(.98,.98),
+            ButtonChanged=true;
+        if(m_CreateButton.Clicked())
+            m_Manager->pushMenu(new ModeSelection(m_Manager),new MenuTransitions::Slide(MenuTransitions::Slide::Right,.08),new MenuTransitions::Slide(MenuTransitions::Slide::Left,.08));
+        m_Render.setView(m_DeviceScroll.getView());
+        for(int i=0;i<m_DeviceButtons.size();i++) {
+            if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))
+                m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,128)),
                 ButtonChanged=true;
-            if(m_CreateButton.Hovering()==false&&m_CreateSprite.getScale().x>(isMobile()?.7:1))
-                m_CreateSprite.scale(.98,.98),
+            else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
+                m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
                 ButtonChanged=true;
-            if(m_CreateButton.Clicked())
-                m_Manager->pushMenu(new ModeSelection(m_Manager),new MenuTransitions::Slide(MenuTransitions::Slide::Right,.1),new MenuTransitions::Slide(MenuTransitions::Slide::Left,.1));
-            m_Render.setView(m_DeviceScroll.getView());
-            for(int i=0;i<m_DeviceButtons.size();i++) {
-                if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))
-                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,128)),
-                    ButtonChanged=true;
-                else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
-                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
-                    ButtonChanged=true;
-            }
-            m_Render.setView(m_Render.getDefaultView());
-            
-            if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
         }
+        m_Render.setView(m_Render.getDefaultView());
+        
+        if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
     }
 }

@@ -11,7 +11,7 @@
 int main() {
     sf::RenderWindow Window;
     Window.create(isMobile()?sf::VideoMode::getDesktopMode():sf::VideoMode(1280,720),"In Home Audio");
-    if(isMobile()==false) Window.setVerticalSyncEnabled(true);
+    Window.setVerticalSyncEnabled(true);
     MenuManager Manager(Window);
     Manager.run(isMobile()?((Menu*)new Menus::LoadingMenu(&Manager)):((Menu*)new Menus::TitleBar(&Manager)));
     return EXIT_SUCCESS;

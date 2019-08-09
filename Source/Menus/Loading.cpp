@@ -12,17 +12,8 @@ namespace Menus {
         m_Render.draw(m_Loading);
         m_Render.display();
     }
-    void LoadingMenu::onGainFocus() {
-        if(m_Loops>=2) m_Loops=-1;
-    }
     void LoadingMenu::update(sf::Time Delta,bool Foreground) {
-        if(Foreground) {
-            if(m_Loops==-1) {
-                m_Manager->popMenu();
-                return;
-            }
-            else if(m_Loops==1) m_Manager->pushMenu(new TitleBar(m_Manager),new MenuTransitions::Grow(sf::Vector2f(m_Manager->getWindow().getSize()/(unsigned)2),.3));
-            if(m_Loops<2) m_Loops++;
-        }
+        if(m_Loops) m_Manager->pushMenu(new TitleBar(m_Manager),new MenuTransitions::Grow(sf::Vector2f(m_Manager->getWindow().getSize()/(unsigned)2),.3));
+        m_Loops++;
     }
 }

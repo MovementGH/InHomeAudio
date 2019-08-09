@@ -49,7 +49,7 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                     Status=Socket.send(Packet,sf::IpAddress::Broadcast,52575);
                 }
                 //Wait
-                sf::sleep(sf::seconds(1));
+                sf::sleep(sf::seconds(2));
             }
         }
         else

@@ -21,13 +21,11 @@ namespace Menus {
         if(Event.type==sf::Event::KeyPressed&&Event.key.code==sf::Keyboard::Escape) m_Manager->popMenu();
     }
     void ModeSelection::update(sf::Time Delta,bool Foreground) {
-        if(Foreground) {
-            m_Render.clear(sf::Color::Transparent);
-            m_ModeScroll.update(m_Manager->getInput());
-            m_Render.setView(m_ModeScroll.getView());
-            for(int i=0;i<m_ModeSprites.size();i++) m_Render.draw(m_ModeSprites[i]);
-            m_Render.setView(m_Render.getDefaultView());
-            m_Render.display();
-        }
+        m_Render.clear(sf::Color::Transparent);
+        m_ModeScroll.update(m_Manager->getInput());
+        m_Render.setView(m_ModeScroll.getView());
+        for(int i=0;i<m_ModeSprites.size();i++) m_Render.draw(m_ModeSprites[i]);
+        m_Render.setView(m_Render.getDefaultView());
+        m_Render.display();
     }
 }

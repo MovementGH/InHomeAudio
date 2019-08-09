@@ -8,9 +8,8 @@ namespace Menus {
     class LoadingMenu : public Menu {
     public:
         LoadingMenu(MenuManager* Manager,std::string MenuName="");
-        virtual void createMenu(sf::Vector2u WindowSize) override;
-        virtual void update(sf::Time Delta,bool Foreground) override;
-        virtual void onGainFocus() override;
+        virtual void createMenu(sf::Vector2u WindowSize)override;
+        virtual void update(sf::Time Delta,bool Foreground)override;
     protected:
         int m_Loops;
         sf::Sprite m_Loading;

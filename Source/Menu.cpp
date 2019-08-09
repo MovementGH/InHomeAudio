@@ -4,7 +4,9 @@ void MenuTransition::exit(sf::Sprite& RenderSprite){m_IsExit=true;}
 void MenuTransition::update(sf::Time Delta,sf::Sprite& RenderSprite){}
 bool MenuTransition::isDone(sf::Sprite& RenderSprite){return true;}
 bool MenuTransition::isExit(){return m_IsExit;}
-Menu::Menu(MenuManager* Manager,std::string MenuName):m_Manager(Manager),m_Name(MenuName),m_Transition(nullptr),m_FocusTransition(nullptr),m_Exiting(false){}
+Menu::Menu(MenuManager* Manager,std::string MenuName,bool BackgroundActivity):
+    m_Manager(Manager),m_Name(MenuName),m_BackgroundActivity(BackgroundActivity),
+    m_Transition(nullptr),m_FocusTransition(nullptr),m_Exiting(false){}
 Menu::~Menu(){delete m_Transition;if(m_FocusTransition)delete m_FocusTransition;}
 void Menu::createRender(sf::Vector2u WindowSize,MenuTransition* Transition) {
     m_Render.create(WindowSize.x,WindowSize.y);
@@ -41,13 +43,14 @@ void Menu::focusTransition(MenuTransition* Transition){
     m_FocusTransition=Transition;
     m_FocusTransition->exit(m_RenderSprite);
 }
-void Menu::focusTransitionExit(){m_NotifiedFocus=false;m_FocusTransition->enter(m_RenderSprite);}
+void Menu::focusTransitionExit(){m_NotifiedFocus=false;if(m_FocusTransition)m_FocusTransition->enter(m_RenderSprite);}
 void Menu::exit(bool UseTransition) {
     m_Exiting=true;
     if(UseTransition) m_Transition->exit(m_RenderSprite);
 }
 bool Menu::getExiting(){return m_Exiting;}
 bool Menu::transitionIsDone(){return m_Transition&&m_Transition->isDone(m_RenderSprite);}
+bool Menu::hasBackgroundActivity(){return m_BackgroundActivity;}
 std::string Menu::getName() {return m_Name;}
 sf::Sprite& Menu::getRender() {return m_RenderSprite;}
 void Menu::createMenu(sf::Vector2u WindowSize){}
@@ -118,7 +121,7 @@ void MenuManager::run(Menu* Main) {
                     m_MenuStack.erase(m_MenuStack.begin()+i);
                     m_StackChanged=true;
                 }
-                else
+                else if(m_MenuStack[i]->hasBackgroundActivity()||m_MenuStack[i]==getForegroundMenu())
                     m_MenuStack[i]->update(Delta,i==m_MenuStack.size()-1),
                     m_Window.draw(m_MenuStack[i]->getRender());
             }
@@ -133,8 +136,8 @@ void MenuManager::pushMenu(Menu* Menu,MenuTransition* Transition,MenuTransition*
     Menu->onLaunch();
     Menu->createRender(m_Window.getSize(),Transition);
     Menu->createMenu(m_Window.getSize());
-    Menu->onGainFocus();
     if(m_MenuStack.size()>1)
+        Menu->onGainFocus(),
         m_MenuStack[m_MenuStack.size()-2]->onLoseFocus(),
         m_MenuStack[m_MenuStack.size()-2]->focusTransition(FocusTransition);
     m_StackChanged=true;

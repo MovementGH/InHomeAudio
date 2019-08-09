@@ -18,7 +18,7 @@ protected:
 };
 class Menu {
 public:
-    Menu(MenuManager* Manager,std::string MenuName="Menu");
+    Menu(MenuManager* Manager,std::string MenuName="Menu",bool BackgroundActivity=false);
     ~Menu();
     
     void createRender(sf::Vector2u WindowSize,MenuTransition* Transition=nullptr);
@@ -31,6 +31,7 @@ public:
     std::string getName();
     bool getExiting();
     bool transitionIsDone();
+    bool hasBackgroundActivity();
     
     virtual void createMenu(sf::Vector2u WindowSize);
     virtual void update(sf::Time Delta,bool Foreground);
@@ -50,7 +51,7 @@ protected:
     std::string m_Name;
 private:
     MenuTransition *m_Transition,*m_FocusTransition;
-    bool m_Exiting,m_NotifiedFocus;
+    bool m_Exiting,m_NotifiedFocus,m_BackgroundActivity;
 };
 
 class MenuManager {
