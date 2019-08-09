@@ -1,5 +1,5 @@
 #include "Menu.hpp"
-void MenuTransition::init(sf::Sprite& RenderSptire){m_IsExit=false;}
+void MenuTransition::enter(sf::Sprite& RenderSptire){m_IsExit=false;}
 void MenuTransition::exit(sf::Sprite& RenderSprite){m_IsExit=true;}
 void MenuTransition::update(sf::Time Delta,sf::Sprite& RenderSprite){}
 bool MenuTransition::isDone(sf::Sprite& RenderSprite){return true;}
@@ -22,7 +22,7 @@ void Menu::createRender(sf::Vector2u WindowSize,MenuTransition* Transition) {
         UseTransition=true;
     }
     if(UseTransition)
-        m_Transition->init(m_RenderSprite);
+        m_Transition->enter(m_RenderSprite);
 }
 void Menu::updateTransition(sf::Time Delta){
     m_Transition->update(Delta,m_RenderSprite);
@@ -41,7 +41,7 @@ void Menu::focusTransition(MenuTransition* Transition){
     m_FocusTransition=Transition;
     m_FocusTransition->exit(m_RenderSprite);
 }
-void Menu::focusTransitionExit(){m_NotifiedFocus=false;m_FocusTransition->init(m_RenderSprite);}
+void Menu::focusTransitionExit(){m_NotifiedFocus=false;m_FocusTransition->enter(m_RenderSprite);}
 void Menu::exit(bool UseTransition) {
     m_Exiting=true;
     if(UseTransition) m_Transition->exit(m_RenderSprite);
@@ -135,6 +135,7 @@ void MenuManager::pushMenu(Menu* Menu,MenuTransition* Transition,MenuTransition*
     Menu->createMenu(m_Window.getSize());
     Menu->onGainFocus();
     if(m_MenuStack.size()>1)
+        m_MenuStack[m_MenuStack.size()-2]->onLoseFocus(),
         m_MenuStack[m_MenuStack.size()-2]->focusTransition(FocusTransition);
     m_StackChanged=true;
 }
@@ -144,7 +145,7 @@ void MenuManager::popMenu(bool UseTransition) {
         m_MenuStack[m_MenuStack.size()-2]->focusTransitionExit(),
         m_MenuStack[m_MenuStack.size()-2]->onGainFocus();
 }
-Menu* MenuManager::getForegroundMenu(){return m_MenuStack[m_MenuStack.size()];}
+Menu* MenuManager::getForegroundMenu(){return m_MenuStack[m_MenuStack.size()-1];}
 AssetManager& MenuManager::getAssets(){return m_Assets;}
 InputManager& MenuManager::getInput(){return m_Input;}
 NetworkDiscovery& MenuManager::getDiscovery(){return m_Discovery;}

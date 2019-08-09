@@ -8,7 +8,7 @@ class MenuManager;
 
 class MenuTransition {
 public:
-    virtual void init(sf::Sprite& RenderSprite);
+    virtual void enter(sf::Sprite& RenderSprite);
     virtual void exit(sf::Sprite& RenderSprite);
     virtual void update(sf::Time Delta,sf::Sprite& RenderSprite);
     virtual bool isDone(sf::Sprite& RenderSprite);

@@ -14,14 +14,14 @@ void InputManager::Event(sf::Event& Event) {
             m_ScrollSpeed=Event.mouseWheel.delta*3;
     }
     else {
-        if(Event.type==sf::Event::TouchEnded) {
+        if(Event.type==sf::Event::TouchEnded&&Event.touch.finger==0) {
             if(m_ScrollTime<5)
                 m_MousePos={Event.touch.x,Event.touch.y},
                 m_IsClicking=true;
             else m_MousePos={-1,-1};
             m_ScrollTime=0;
         }
-        if(Event.type==sf::Event::TouchMoved)
+        if(Event.type==sf::Event::TouchMoved&&Event.touch.finger==0)
             m_ScrollTime++,
             m_ScrollSpeed=m_ScrollTime>1?(Event.touch.y-m_MousePos.y):0,
             m_MousePos={Event.touch.x,Event.touch.y};
