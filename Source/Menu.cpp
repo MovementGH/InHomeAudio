@@ -56,7 +56,6 @@ sf::Sprite& Menu::getRender() {return m_RenderSprite;}
 void Menu::createMenu(sf::Vector2u WindowSize){}
 void Menu::update(sf::Time Delta,bool Foreground){}
 void Menu::render(){}
-void Menu::onLaunch(){}
 void Menu::onEvent(sf::Event& Event){}
 void Menu::onLoseFocus(){}
 void Menu::onGainFocus(){}
@@ -64,8 +63,7 @@ void Menu::onLoseFocusComplete(){}
 void Menu::onGainFocusComplete(){}
 void Menu::onExit(){}
 MenuManager::MenuManager(sf::RenderWindow& Window):m_Window(Window),m_Input(Window),m_HasFocus(true){}
-void MenuManager::run(Menu* Main) {
-    pushMenu(Main);
+void MenuManager::run() {
     sf::Clock FrameClock;
     while(m_Window.isOpen()) {
         m_Input.Reset();
@@ -133,7 +131,6 @@ void MenuManager::run(Menu* Main) {
 }
 void MenuManager::pushMenu(Menu* Menu,MenuTransition* Transition,MenuTransition* FocusTransition) {
     m_MenuStack.push_back(Menu);
-    Menu->onLaunch();
     Menu->createRender(m_Window.getSize(),Transition);
     Menu->createMenu(m_Window.getSize());
     if(m_MenuStack.size()>1)

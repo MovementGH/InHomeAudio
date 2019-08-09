@@ -37,7 +37,6 @@ public:
     virtual void update(sf::Time Delta,bool Foreground);
     virtual void render();
     
-    virtual void onLaunch();
     virtual void onEvent(sf::Event& Event);
     virtual void onLoseFocus();
     virtual void onLoseFocusComplete();
@@ -58,7 +57,7 @@ class MenuManager {
 public:
     MenuManager(sf::RenderWindow& Window);
     
-    void run(Menu* Main);
+    void run();
     
     void pushMenu(Menu* Menu,MenuTransition* Transition=nullptr,MenuTransition* FocusTransition=new MenuTransition());
     void popMenu(bool UseTransition=true);

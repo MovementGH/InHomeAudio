@@ -10,7 +10,6 @@ namespace Menus {
         TitleBar(MenuManager* Manager,std::string MenuName="");
         
         virtual void createMenu(sf::Vector2u WindowSize) override;
-        virtual void onLaunch() override;
         virtual void render() override;
         virtual void update(sf::Time Delta,bool Foreground) override;
     protected:
