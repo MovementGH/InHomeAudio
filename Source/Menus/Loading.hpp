@@ -1,8 +1,6 @@
 #ifndef Loading_hpp
 #define Loading_hpp
-#include <SFML/Graphics.hpp>
-#include "../Menu.hpp"
-#include "../Platform.hpp"
+#include "../Transitions.hpp"
 #include "../ResourcePath.hpp"
 #include "TitleBar.hpp"
 

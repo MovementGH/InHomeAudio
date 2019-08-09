@@ -1,9 +1,7 @@
 #ifndef Streamer_hpp
 #define Streamer_hpp
 #include <iostream>
-#include <vector>
 #include <thread>
-#include <SFML/Network.hpp>
 #include "Platform.hpp"
 #include "Codecs.hpp"
 #include "Filters.hpp"

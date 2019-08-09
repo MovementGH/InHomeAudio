@@ -2,8 +2,8 @@
 void MenuTransition::init(sf::Sprite& RenderSptire){}
 void MenuTransition::exit(sf::Sprite& RenderSprite){}
 void MenuTransition::update(sf::Time Delta,sf::Sprite& RenderSprite){}
-bool MenuTransition::isDone(){return true;}
-Menu::Menu(MenuManager* Manager,std::string MenuName):m_Manager(Manager),m_Name(MenuName),m_Transition(nullptr){}
+bool MenuTransition::isDone(sf::Sprite& RenderSprite){return true;}
+Menu::Menu(MenuManager* Manager,std::string MenuName):m_Manager(Manager),m_Name(MenuName),m_Transition(nullptr),m_Exiting(false){}
 void Menu::createRender(sf::Vector2u WindowSize,MenuTransition* Transition) {
     m_Render.create(WindowSize.x,WindowSize.y);
     m_RenderSprite.setTexture(m_Render.getTexture());
@@ -23,13 +23,11 @@ void Menu::createRender(sf::Vector2u WindowSize,MenuTransition* Transition) {
 }
 void Menu::updateTransition(sf::Time Delta){m_Transition->update(Delta,m_RenderSprite);}
 void Menu::exit(bool UseTransition) {
-    if(UseTransition) {
-        m_Exiting=true;
-        m_Transition->exit(m_RenderSprite);
-    }
+    m_Exiting=true;
+    if(UseTransition) m_Transition->exit(m_RenderSprite);
 }
 bool Menu::getExiting(){return m_Exiting;}
-bool Menu::transitionIsDone(){return m_Transition&&m_Transition->isDone();}
+bool Menu::transitionIsDone(){return m_Transition&&m_Transition->isDone(m_RenderSprite);}
 std::string Menu::getName() {return m_Name;}
 sf::Sprite& Menu::getRender() {return m_RenderSprite;}
 void Menu::createMenu(sf::Vector2u WindowSize){}
@@ -50,7 +48,12 @@ void MenuManager::run(Menu* Main) {
         sf::Event Event;
         while(m_Window.pollEvent(Event)) {
             if(Event.type==sf::Event::Closed) {
-                while(m_MenuStack.size()) popMenu();
+                while(m_MenuStack.size()) {
+                    m_MenuStack[m_MenuStack.size()-1]->onExit();
+                    delete m_MenuStack[m_MenuStack.size()-1];
+                    m_MenuStack.erase(m_MenuStack.begin()+m_MenuStack.size()-1);
+                    m_StackChanged=true;
+                }
             }
             if(Event.type==sf::Event::LostFocus) {
                 m_HasFocus=false;
@@ -101,6 +104,7 @@ void MenuManager::run(Menu* Main) {
             m_Window.display();
         }
         if(m_HasFocus==false) sf::sleep(sf::seconds(1));
+        if(m_MenuStack.size()==0) m_Window.close();
     }
 }
 void MenuManager::pushMenu(Menu* Menu,MenuTransition* Transition) {
@@ -113,7 +117,7 @@ void MenuManager::pushMenu(Menu* Menu,MenuTransition* Transition) {
     m_StackChanged=true;
 }
 void MenuManager::popMenu(bool UseTransition) {
-    m_MenuStack[m_MenuStack.size()-1]->exit();
+    m_MenuStack[m_MenuStack.size()-1]->exit(UseTransition);
 }
 AssetManager& MenuManager::getAssets(){return m_Assets;}
 InputManager& MenuManager::getInput(){return m_Input;}

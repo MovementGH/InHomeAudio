@@ -1,6 +1,5 @@
 #ifndef Devices_hpp
 #define Devices_hpp
-#include <vector>
 #include <SFML/Audio.hpp>
 #include "Streamer.hpp"
 

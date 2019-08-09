@@ -11,7 +11,7 @@ namespace Menus {
         m_Line.setPosition(0,117);
     }
     void TitleBar::onLaunch() {
-        m_Manager->pushMenu(new MainMenu(m_Manager));
+        m_Manager->pushMenu(new MainMenu(m_Manager),isMobile()?(new MenuTransitions::Grow(sf::Vector2f(m_Manager->getWindow().getSize()/(unsigned)2),.3)):nullptr);
     }
     void TitleBar::createMenu(sf::Vector2u WindowSize) {
         if(((float)WindowSize.x/(float)WindowSize.y)<1)

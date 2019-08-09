@@ -1,7 +1,6 @@
 #ifndef Menu_hpp
 #define Menu_hpp
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include "UI.hpp"
 #include "NetworkDiscovery.hpp"
 
@@ -12,7 +11,7 @@ public:
     virtual void init(sf::Sprite& RenderSprite);
     virtual void exit(sf::Sprite& RenderSprite);
     virtual void update(sf::Time Delta,sf::Sprite& RenderSprite);
-    virtual bool isDone();
+    virtual bool isDone(sf::Sprite& RenderSprite);
 };
 class Menu {
 public:

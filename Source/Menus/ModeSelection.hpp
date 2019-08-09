@@ -1,8 +1,6 @@
 #ifndef ModeSelection_hpp
 #define ModeSelection_hpp
 #include <math.h>
-#include <SFML/Graphics.hpp>
-#include "../Platform.hpp"
 #include "../Menu.hpp"
 #include "../ResourcePath.hpp"
 

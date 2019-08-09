@@ -1,11 +1,7 @@
 #ifndef MainMenu_hpp
 #define MainMenu_hpp
-#include <math.h>
-#include <SFML/Graphics.hpp>
-#include "../Menu.hpp"
-#include "../UI.hpp"
-#include "../Platform.hpp"
 #include "../ResourcePath.hpp"
+#include "../Transitions.hpp"
 #include "ModeSelection.hpp"
 
 namespace Menus {

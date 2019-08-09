@@ -2,7 +2,6 @@
 #define UI_hpp
 #include <SFML/Graphics.hpp>
 #include "Platform.hpp"
-#include <iostream>
 class InputManager {
 public:
     InputManager(sf::RenderWindow& Window);
