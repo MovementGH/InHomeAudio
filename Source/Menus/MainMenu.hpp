@@ -25,6 +25,7 @@ namespace Menus {
         std::vector<sf::Sprite> m_DeviceSprites,m_DeviceArrows;
         std::vector<sf::Text> m_DeviceNames,m_DeviceModes;
         std::vector<sf::RectangleShape> m_DeviceOutlines;
+        std::vector<Button> m_DeviceButtons;
         ScrollArea m_DeviceScroll;
         sf::Sprite m_CreateSprite;
         

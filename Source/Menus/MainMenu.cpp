@@ -51,6 +51,7 @@ namespace Menus {
         for(int i=0;i<Devices.size();i++) if(Time-Devices[i].lastSeen>2) Devices.erase(Devices.begin()+i), i--;
         if(Devices.size()!=m_DeviceOutlines.size()) {
             m_DeviceOutlines.resize(Devices.size());
+            m_DeviceButtons.resize(Devices.size(),{m_Manager->getInput()});
             m_DeviceSprites.resize(Devices.size());
             m_DeviceNames.resize(Devices.size());
             m_DeviceModes.resize(Devices.size());
@@ -61,6 +62,7 @@ namespace Menus {
                 m_DeviceOutlines[i].setPosition(10000,i*275);
                 m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64));
                 m_DeviceOutlines[i].setOutlineThickness(1);
+                m_DeviceButtons[i].Bind(m_DeviceOutlines[i]);
                 m_DeviceSprites[i].setTexture(*m_PlatformIcons[Devices[i].platform]);
                 m_DeviceSprites[i].setOrigin(0,0);
                 m_DeviceSprites[i].setPosition(10020,10+i*275);
@@ -111,6 +113,17 @@ namespace Menus {
                 ButtonChanged=true;
             if(m_CreateButton.Clicked())
                 m_Manager->pushMenu(new ModeSelection(m_Manager),true,(sf::Vector2u)m_CreateSprite.getPosition());
+            
+            m_Render.setView(m_DeviceScroll.getView());
+            for(int i=0;i<m_DeviceButtons.size();i++) {
+                if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))
+                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,128)),
+                    ButtonChanged=true;
+                else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
+                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
+                    ButtonChanged=true;
+            }
+            m_Render.setView(m_Render.getDefaultView());
             
             if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
         }

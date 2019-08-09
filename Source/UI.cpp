@@ -52,8 +52,9 @@ AssetBase::AssetBase(std::string Filename):m_Filename(Filename){}
 Button::Button(InputManager& Input) : m_Input(Input),m_IsClicked(false) {
     
 }
-bool Button::Hovering() {
-    sf::Vector2i MousePos=m_Input.getMousePos();
+bool Button::Hovering(sf::RenderTarget* Renderer) {
+    if(Renderer==nullptr) Renderer=&m_Input.getWindow();
+    sf::Vector2f MousePos=Renderer->mapPixelToCoords(m_Input.getMousePos());
     return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;
 }
 bool Button::Clicking() {
