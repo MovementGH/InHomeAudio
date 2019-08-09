@@ -1,7 +1,9 @@
 #ifndef MainMenu_hpp
 #define MainMenu_hpp
+#include <math.h>
 #include <SFML/Graphics.hpp>
 #include "../Menu.hpp"
+#include "../UI.hpp"
 #include "../Platform.hpp"
 #include "../ResourcePath.hpp"
 
@@ -16,6 +18,7 @@ namespace Menus {
         
     protected:
         std::vector<sf::Sprite> m_DeviceSprites;
+        ScrollArea m_DeviceScroll;
         
         std::vector<sf::Texture*> m_PlatformIcons;
     };
