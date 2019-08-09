@@ -86,7 +86,7 @@ namespace Menus {
         }
         return false;
     }
-    void MainMenu::onLoseFocus() {
+    void MainMenu::onLoseFocusComplete() {
         if(m_Manager->getMenuStack()[m_Manager->getMenuStack().size()-1]!=this) {
             m_Render.clear(sf::Color::Transparent);
             //Bug on iOS when rendering render textures that they dont go transparent
@@ -97,7 +97,7 @@ namespace Menus {
             m_Render.display();
         }
     }
-    void MainMenu::onGainFocus() {
+    void MainMenu::onGainFocusComplete() {
         m_DeviceOutlines.clear();
         updateDevices();
         render();
@@ -112,8 +112,7 @@ namespace Menus {
                 m_CreateSprite.scale(.98,.98),
                 ButtonChanged=true;
             if(m_CreateButton.Clicked())
-                m_Manager->pushMenu(new ModeSelection(m_Manager),new MenuTransitions::Grow(sf::Vector2f(m_Manager->getWindow().getSize()/(unsigned)2),.3));
-            
+                m_Manager->pushMenu(new ModeSelection(m_Manager));
             m_Render.setView(m_DeviceScroll.getView());
             for(int i=0;i<m_DeviceButtons.size();i++) {
                 if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))

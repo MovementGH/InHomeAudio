@@ -12,12 +12,18 @@ public:
     virtual void exit(sf::Sprite& RenderSprite);
     virtual void update(sf::Time Delta,sf::Sprite& RenderSprite);
     virtual bool isDone(sf::Sprite& RenderSprite);
+    bool isExit();
+protected:
+    bool m_IsExit;
 };
 class Menu {
 public:
     Menu(MenuManager* Manager,std::string MenuName="Menu");
+    ~Menu();
     
     void createRender(sf::Vector2u WindowSize,MenuTransition* Transition=nullptr);
+    void focusTransition(MenuTransition* Transition=new MenuTransition());
+    void focusTransitionExit();
     void updateTransition(sf::Time Delta);
     void exit(bool UseTransition=true);
     
@@ -33,7 +39,9 @@ public:
     virtual void onLaunch();
     virtual void onEvent(sf::Event& Event);
     virtual void onLoseFocus();
+    virtual void onLoseFocusComplete();
     virtual void onGainFocus();
+    virtual void onGainFocusComplete();
     virtual void onExit();
 protected:
     MenuManager* m_Manager;
@@ -41,8 +49,8 @@ protected:
     sf::Sprite m_RenderSprite;
     std::string m_Name;
 private:
-    MenuTransition* m_Transition;
-    bool m_Exiting;
+    MenuTransition *m_Transition,*m_FocusTransition;
+    bool m_Exiting,m_NotifiedFocus;
 };
 
 class MenuManager {
@@ -51,8 +59,10 @@ public:
     
     void run(Menu* Main);
     
-    void pushMenu(Menu* Menu,MenuTransition* Transition=nullptr);
+    void pushMenu(Menu* Menu,MenuTransition* Transition=nullptr,MenuTransition* FocusTransition=new MenuTransition());
     void popMenu(bool UseTransition=true);
+    
+    Menu* getForegroundMenu();
     
     AssetManager& getAssets();
     InputManager& getInput();

@@ -12,7 +12,6 @@ namespace MenuTransitions {
     protected:
         sf::Vector2f m_Center;
         float m_Speed;
-        bool m_IsExiting;
     };
 }
 #endif /* Transitions_hpp */
