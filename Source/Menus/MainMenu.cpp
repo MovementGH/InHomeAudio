@@ -48,16 +48,19 @@ namespace Menus {
                 m_DeviceOutlines[i].setOutlineThickness(1);
                 m_DeviceSprites[i].setTexture(*m_PlatformIcons[Devices[i].platform]);
                 m_DeviceSprites[i].setOrigin(0,0);
-                m_DeviceSprites[i].setPosition(10050,10+i*275);
+                m_DeviceSprites[i].setPosition(10020,10+i*275);
                 m_DeviceNames[i].setFont(m_Font);
                 m_DeviceNames[i].setCharacterSize(36);
                 m_DeviceNames[i].setString(Devices[i].name);
-                m_DeviceNames[i].setPosition(10350,133+i*275);
+                int Times=0;
+                while(m_DeviceNames[i].getLocalBounds().width>m_Manager->getWindow().getSize().x-375&&Times<100)
+                    m_DeviceNames[i].setString(m_DeviceNames[i].getString().toAnsiString().substr(0,m_DeviceNames[i].getString().getSize()-4)+"..."),Times++;
+                m_DeviceNames[i].setPosition(10300,133+i*275);
                 m_DeviceNames[i].setOrigin(0,m_DeviceNames[i].getLocalBounds().height);
                 m_DeviceModes[i].setFont(m_Font);
                 m_DeviceModes[i].setCharacterSize(24);
                 m_DeviceModes[i].setString("Voice Chat");
-                m_DeviceModes[i].setPosition(10350,143+i*275);
+                m_DeviceModes[i].setPosition(10300,143+i*275);
             }
             return true;
         }
