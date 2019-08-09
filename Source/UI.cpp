@@ -49,8 +49,10 @@ float InputManager::getScrollSpeed() {
 sf::RenderWindow& InputManager::getWindow(){return m_Window;}
 AssetBase::~AssetBase(){}
 AssetBase::AssetBase(std::string Filename):m_Filename(Filename){}
-Button::Button(InputManager& Input) : m_Input(Input),m_IsClicked(false) {
-    
+Button::Button(InputManager& Input) : m_Input(Input),m_IsClicked(false){}
+Button::Button(Button& Button) : m_Input(Button.m_Input) {
+    m_Area=Button.m_Area;
+    m_IsClicked=Button.m_IsClicked;
 }
 bool Button::Hovering(sf::RenderTarget* Renderer) {
     if(Renderer==nullptr) Renderer=&m_Input.getWindow();
