@@ -54,6 +54,11 @@ Button::Button(const Button& Button) : m_Input(Button.m_Input) {
     m_Area=Button.m_Area;
     m_IsClicked=Button.m_IsClicked;
 }
+Button& Button::operator=(const Button& Button) {
+    m_Area=Button.m_Area;
+    m_IsClicked=Button.m_IsClicked;
+    return *this;
+}
 bool Button::Hovering(sf::RenderTarget* Renderer) {
     if(Renderer==nullptr) Renderer=&m_Input.getWindow();
     sf::Vector2f MousePos=Renderer->mapPixelToCoords(m_Input.getMousePos());

@@ -55,6 +55,7 @@ class Button {
 public:
     Button(InputManager& Input);
     Button(const Button& Button);
+    Button& operator=(const Button& Button);
     template <typename Entity> Button(InputManager& Input,Entity& Binder) : m_Input(Input),m_IsClicked(false) { Bind(Binder); }
     template <typename Entity> void Bind(Entity& Binder) { m_Area=Binder.getGlobalBounds(); };
     
