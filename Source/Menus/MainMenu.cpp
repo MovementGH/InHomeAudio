@@ -11,15 +11,19 @@ namespace Menus {
         m_PlatformIcons.push_back(&m_Manager->getAssets().getAsset<sf::Texture>(resourcePath()+"iOS.png"));
         m_CreateSprite.setTexture(m_CreateTexture);
         m_CreateSprite.setOrigin(m_CreateTexture.getSize().x/2,m_CreateTexture.getSize().y/2);
+        m_NoDevices.setFont(m_Font);
+        m_NoDevices.setCharacterSize(32);
+        m_NoDevices.setString("No Devices Found");
+        m_NoDevices.setOrigin(m_NoDevices.getLocalBounds().width/2,m_NoDevices.getLocalBounds().height/2);
     }
     void MainMenu::createMenu(sf::Vector2u WindowSize) {
-//        m_Manager->getDiscovery().setDiscoverable(true); //TODO remove this
         if(isMobile())
             m_CreateSprite.setPosition(WindowSize.x-60,75),
             m_CreateSprite.setScale(.70,.70);
         else
             m_CreateSprite.setPosition(WindowSize.x-60,55);
         m_CreateButton.Bind(m_CreateSprite);
+        m_NoDevices.setPosition(WindowSize.x/2,WindowSize.y/2+60);
         m_DeviceScroll.setArea({0,120,WindowSize.x+0.f,WindowSize.y-120.f},WindowSize);
         m_DeviceOutlines.clear();
         if(m_Manager->getMenuStack()[m_Manager->getMenuStack().size()-1]==this)
@@ -42,6 +46,8 @@ namespace Menus {
             m_Render.draw(m_DeviceArrows[i]);
         }
         m_Render.setView(m_Render.getDefaultView());
+        if(m_DeviceOutlines.size()==0)
+            m_Render.draw(m_NoDevices);
         m_Render.display();
     }
     bool MainMenu::updateDevices() {

@@ -24,6 +24,7 @@ namespace Menus {
         std::vector<Button> m_DeviceButtons;
         ScrollArea m_DeviceScroll;
         sf::Sprite m_CreateSprite;
+        sf::Text m_NoDevices;
         
         Button m_CreateButton;
         
