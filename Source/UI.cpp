@@ -66,11 +66,13 @@ bool Button::Hovering(sf::RenderTarget* Renderer) {
     sf::Vector2f MousePos=Renderer->mapPixelToCoords(m_Input.getMousePos());
     return MousePos.x>m_Area.left&&MousePos.x<m_Area.left+m_Area.width&&MousePos.y>m_Area.top&&MousePos.y<m_Area.top+m_Area.height;
 }
-bool Button::Clicking() {
-    return Hovering()&&m_Input.isClicking();
+bool Button::Clicking(sf::RenderTarget* Renderer) {
+    if(Renderer==nullptr) Renderer=&m_Input.getWindow();
+    return Hovering(Renderer)&&m_Input.isClicking();
 }
-bool Button::Clicked() {
-    bool Result=Hovering()&&(m_Input.isClicking()==false)&&m_IsClicked==true;
+bool Button::Clicked(sf::RenderTarget* Renderer) {
+    if(Renderer==nullptr) Renderer=&m_Input.getWindow();
+    bool Result=Hovering(Renderer)&&(m_Input.isClicking()==false)&&m_IsClicked==true;
     m_IsClicked=m_Input.isClicking();
     return Result;
 }

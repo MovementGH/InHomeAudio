@@ -3,6 +3,7 @@
 #include <math.h>
 #include "../Menu.hpp"
 #include "../ResourcePath.hpp"
+#include "Modes/Speaker.hpp"
 
 namespace Menus {
     class ModeSelection : public Menu {

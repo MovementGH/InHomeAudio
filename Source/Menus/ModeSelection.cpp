@@ -45,6 +45,9 @@ namespace Menus {
                 if(m_ModeButtons[i].Hovering(&m_Render)==false&&m_ModeSprites[i].getScale().x>1)
                     m_ModeSprites[i].scale(.99,.99),
                     ButtonChanged=true;
+                if(m_ModeButtons[i].Clicked(&m_Render)) {
+                    if(i==2) m_Manager->pushMenu(new Modes::Speaker(m_Manager));
+                }
             }
             m_Render.setView(m_Render.getDefaultView());
             if(ButtonChanged||m_Manager->getInput().getScrollSpeed()) render();

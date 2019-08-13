@@ -50,6 +50,7 @@ void Menu::exit(bool UseTransition) {
 }
 bool Menu::getExiting(){return m_Exiting;}
 bool Menu::transitionIsDone(){return m_Transition&&m_Transition->isDone(m_RenderSprite);}
+bool Menu::focusTransitionRunning(){return m_FocusTransition&&(m_FocusTransition->isDone(m_RenderSprite)==false);}
 bool Menu::hasBackgroundActivity(){return m_BackgroundActivity;}
 std::string Menu::getName() {return m_Name;}
 sf::Sprite& Menu::getRender() {return m_RenderSprite;}
@@ -119,7 +120,7 @@ void MenuManager::run() {
                     m_MenuStack.erase(m_MenuStack.begin()+i);
                     m_StackChanged=true;
                 }
-                else if(m_MenuStack[i]->hasBackgroundActivity()||m_MenuStack[i]==getForegroundMenu())
+                else if(m_MenuStack[i]->hasBackgroundActivity()||m_MenuStack[i]==getForegroundMenu()||m_MenuStack[i]->focusTransitionRunning())
                     m_MenuStack[i]->update(Delta,i==m_MenuStack.size()-1),
                     m_Window.draw(m_MenuStack[i]->getRender());
             }
@@ -148,6 +149,6 @@ void MenuManager::popMenu(bool UseTransition) {
 Menu* MenuManager::getForegroundMenu(){return m_MenuStack[m_MenuStack.size()-1];}
 AssetManager& MenuManager::getAssets(){return m_Assets;}
 InputManager& MenuManager::getInput(){return m_Input;}
-NetworkDiscovery& MenuManager::getDiscovery(){return m_Discovery;}
+StatusDiscovery& MenuManager::getDiscovery(){return m_Discovery;}
 sf::RenderWindow& MenuManager::getWindow(){return m_Window;}
 std::vector<Menu*>& MenuManager::getMenuStack(){return m_MenuStack;}

@@ -10,48 +10,32 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             sf::Packet Packet;
             sf::IpAddress IP;
             sf::Uint16 Port;
-            time_t Time;
             int Loops=0;
             while(m_Search) {
                 if(Loops%20==0) {
-                    //Listen
                     Status=sf::Socket::Done;
                     while(Status==sf::Socket::Done) {
                         Status=Socket.receive(Packet,IP,Port);
                         if(Status==sf::Socket::Done&&IP!=sf::IpAddress::getLocalAddress()) {
-                            sf::String name;
-                            sf::Uint8 platform;
-                            std::time(&Time);
-                            Packet>>name>>platform;
+                            Device* Received=decodePacket(Packet);
+                            Received->ip=IP;
                             bool Found=false;
-                            for(int i=0;i<m_Devices.size()&&Found==false;i++) {
-                                if(m_Devices[i].ip==IP) {
-                                    m_Devices[i].lastSeen=Time;
-                                    m_Devices[i].name=name;
-                                    m_Devices[i].platform=(Platform)platform;
+                            for(int i=0;i<m_Devices.size()&&Found==false;i++)
+                                if(m_Devices[i]->ip==IP)
+                                    delete m_Devices[i],
+                                    m_Devices[i]=Received,
                                     Found=true;
-                                }
-                            }
-                            if(Found==false) {
-                                NetworkDevice NewDevice;
-                                NewDevice.ip=IP;
-                                NewDevice.lastSeen=Time;
-                                NewDevice.name=name;
-                                NewDevice.platform=(Platform)platform;
-                                m_Devices.push_back(NewDevice);
-                            }
+                            if(Found==false) m_Devices.push_back(Received);
                         }
                         else if(Status==sf::Socket::Error)
                             std::cout<<"Socket Error!"<<std::endl;
                     }
-                    //Send
                     if(m_Discoverable) {
-                        Packet.clear();
-                        Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform();
-                        Status=Socket.send(Packet,sf::IpAddress::Broadcast,52575);
+                        Packet=createPacket();
+                        Socket.send(Packet,sf::IpAddress::Broadcast,52575);
                     }
+                    
                 }
-                //Wait
                 sf::sleep(sf::seconds(.1));
             }
         }
@@ -59,19 +43,55 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             std::cout<<"Failed to bind!"<<std::endl;
     });
 }
+NetworkDiscovery::Device* NetworkDiscovery::decodePacket(sf::Packet& Packet) {
+    sf::String Name;
+    sf::Uint8 platform;
+    time_t Time;
+    std::time(&Time);
+    Packet>>Name>>platform;
+    Device* Received=new Device();
+    Received->lastSeen=Time;
+    Received->name=Name;
+    Received->platform=(Platform)platform;
+    return Received;
+}
+sf::Packet NetworkDiscovery::createPacket() {
+    sf::Packet Packet;
+    Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform();
+    return Packet;
+}
 NetworkDiscovery::~NetworkDiscovery() {
     m_Search=false;
     m_WorkerThread->join();
     delete m_WorkerThread;
 }
-
 void NetworkDiscovery::setDiscoverable(bool Discoverable) {
     m_Discoverable=Discoverable;
 }
 bool NetworkDiscovery::getDiscoverable() {
     return m_Discoverable;
 }
-
-std::vector<NetworkDevice> NetworkDiscovery::getDevices() {
+std::vector<NetworkDiscovery::Device*> NetworkDiscovery::getDevices() {
     return m_Devices;
 }
+
+
+NetworkDiscovery::Device* StatusDiscovery::decodePacket(sf::Packet& Packet) {
+    sf::String Name,Status;
+    sf::Uint8 platform;
+    time_t Time;
+    std::time(&Time);
+    Packet>>Name>>platform>>Status;
+    Device* Received=new Device();
+    Received->lastseen=Time;
+    Received->name=Name;
+    Received->platform=(Platform)platform;
+    Received->status=Status;
+    return (NetworkDiscovery::Device*)Received;
+}
+sf::Packet StatusDiscovery::createPacket() {
+    sf::Packet Packet;
+    Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform()<<m_Status;
+    return Packet;
+}
+void StatusDiscovery::setStatus(sf::String Status){m_Status=Status;}

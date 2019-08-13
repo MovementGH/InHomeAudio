@@ -50,10 +50,10 @@ namespace Menus {
         m_Render.display();
     }
     bool MainMenu::updateDevices() {
-        std::vector<NetworkDevice> Devices=m_Manager->getDiscovery().getDevices();
+        std::vector<NetworkDiscovery::Device*> Devices=m_Manager->getDiscovery().getDevices();
         std::time_t Time;
         std::time(&Time);
-        for(int i=0;i<Devices.size();i++) if(Time-Devices[i].lastSeen>2) Devices.erase(Devices.begin()+i), i--;
+        for(int i=0;i<Devices.size();i++) if(Time-Devices[i]->lastSeen>2) Devices.erase(Devices.begin()+i), i--;
         if(Devices.size()!=m_DeviceOutlines.size()) {
             m_DeviceOutlines.resize(Devices.size());
             m_DeviceButtons.resize(Devices.size(),{m_Manager->getInput()});
@@ -68,12 +68,12 @@ namespace Menus {
                 m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64));
                 m_DeviceOutlines[i].setOutlineThickness(1);
                 m_DeviceButtons[i].Bind(m_DeviceOutlines[i]);
-                m_DeviceSprites[i].setTexture(*m_PlatformIcons[Devices[i].platform]);
+                m_DeviceSprites[i].setTexture(*m_PlatformIcons[Devices[i]->platform]);
                 m_DeviceSprites[i].setOrigin(0,0);
                 m_DeviceSprites[i].setPosition(10020,10+i*275);
                 m_DeviceNames[i].setFont(m_Font);
                 m_DeviceNames[i].setCharacterSize(36);
-                m_DeviceNames[i].setString(Devices[i].name);
+                m_DeviceNames[i].setString(Devices[i]->name);
                 int Times=0;
                 while(m_DeviceNames[i].getLocalBounds().width>m_Manager->getWindow().getSize().x-385&&Times<100)
                     m_DeviceNames[i].setString(m_DeviceNames[i].getString().toAnsiString().substr(0,m_DeviceNames[i].getString().getSize()-4)+"..."),Times++;
@@ -81,7 +81,7 @@ namespace Menus {
                 m_DeviceNames[i].setOrigin(0,m_DeviceNames[i].getLocalBounds().height);
                 m_DeviceModes[i].setFont(m_Font);
                 m_DeviceModes[i].setCharacterSize(24);
-                m_DeviceModes[i].setString("Voice Chat");
+                m_DeviceModes[i].setString(((StatusDiscovery::Device*)Devices[i])->status);
                 m_DeviceModes[i].setPosition(10300,143+i*275);
                 m_DeviceArrows[i].setTexture(m_ArrowTexture);
                 m_DeviceArrows[i].setPosition(m_Manager->getWindow().getSize().x+10000,137.5+i*275);
@@ -90,6 +90,14 @@ namespace Menus {
             return true;
         }
         return false;
+    }
+    void MainMenu::onLoseFocus() {
+        m_CreateSprite.setColor(sf::Color::Transparent);
+        render();
+    }
+    void MainMenu::onGainFocusComplete() {
+        m_CreateSprite.setColor(sf::Color::White);
+        render();
     }
     void MainMenu::update(sf::Time Delta,bool Foreground) {
         if(Foreground) {

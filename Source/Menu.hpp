@@ -31,6 +31,7 @@ public:
     std::string getName();
     bool getExiting();
     bool transitionIsDone();
+    bool focusTransitionRunning();
     bool hasBackgroundActivity();
     
     virtual void createMenu(sf::Vector2u WindowSize);
@@ -66,7 +67,7 @@ public:
     
     AssetManager& getAssets();
     InputManager& getInput();
-    NetworkDiscovery& getDiscovery();
+    StatusDiscovery& getDiscovery();
     sf::RenderWindow& getWindow();
     std::vector<Menu*>& getMenuStack();
 protected:
@@ -74,7 +75,7 @@ protected:
     sf::RenderWindow& m_Window;
     InputManager m_Input;
     AssetManager m_Assets;
-    NetworkDiscovery m_Discovery;
+    StatusDiscovery m_Discovery;
     bool m_StackChanged,m_HasFocus;
 };
 

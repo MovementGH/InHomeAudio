@@ -60,8 +60,8 @@ public:
     template <typename Entity> void Bind(Entity& Binder) { m_Area=Binder.getGlobalBounds(); };
     
     bool Hovering(sf::RenderTarget* Renderer=nullptr);
-    bool Clicking();
-    bool Clicked();
+    bool Clicking(sf::RenderTarget* Renderer=nullptr);
+    bool Clicked(sf::RenderTarget * Renderer=nullptr);
     
     sf::FloatRect m_Area;
     bool m_IsClicked;
