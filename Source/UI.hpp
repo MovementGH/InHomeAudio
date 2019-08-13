@@ -14,7 +14,7 @@ public:
     float getScrollSpeed();
     sf::RenderWindow& getWindow();
 private:
-    bool m_IsClicking,m_ResetMouse;
+    bool m_IsClicking,m_ResetMouse,m_Clicked;
     int m_ScrollTime;
     sf::Vector2i m_MousePos;
     float m_ScrollSpeed;

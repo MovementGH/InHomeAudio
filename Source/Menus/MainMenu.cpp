@@ -18,17 +18,16 @@ namespace Menus {
     }
     void MainMenu::createMenu(sf::Vector2u WindowSize) {
         if(isMobile())
-            m_CreateSprite.setPosition(WindowSize.x-60,75),
+            m_CreateSprite.setPosition(WindowSize.x-43,75),
             m_CreateSprite.setScale(.70,.70);
         else
-            m_CreateSprite.setPosition(WindowSize.x-60,55);
+            m_CreateSprite.setPosition(WindowSize.x-58,55);
         m_CreateButton.Bind(m_CreateSprite);
-        m_NoDevices.setPosition(WindowSize.x/2,WindowSize.y/2+60);
+        m_NoDevices.setPosition(WindowSize.x/2,WindowSize.y/2);
         m_DeviceScroll.setArea({0,120,WindowSize.x+0.f,WindowSize.y-120.f},WindowSize);
         m_DeviceOutlines.clear();
-        if(m_Manager->getMenuStack()[m_Manager->getMenuStack().size()-1]==this)
-            updateDevices(),
-            render();
+        updateDevices(),
+        render();
     }
     void MainMenu::onEvent(sf::Event& Event) {
         if(Event.type==sf::Event::KeyPressed&&Event.key.code==sf::Keyboard::Escape) m_Manager->popMenu();
@@ -92,37 +91,28 @@ namespace Menus {
         }
         return false;
     }
-    void MainMenu::onLoseFocus() {
-        if(m_Manager->getForegroundMenu()!=this)
-            m_CreateSprite.move(100000,0),
-            render();
-    }
-    void MainMenu::onGainFocusComplete() {
-        if(m_Manager->getForegroundMenu()!=this)
-            m_CreateSprite.move(-100000,0),
-            render();
-    }
     void MainMenu::update(sf::Time Delta,bool Foreground) {
-        bool ButtonChanged=false;
-        if(m_CreateButton.Hovering()&&m_CreateSprite.getScale().x<1.1*(isMobile()?.7:1))
-            m_CreateSprite.scale(1.02,1.02),
-            ButtonChanged=true;
-        if(m_CreateButton.Hovering()==false&&m_CreateSprite.getScale().x>(isMobile()?.7:1))
-            m_CreateSprite.scale(.98,.98),
-            ButtonChanged=true;
-        if(m_CreateButton.Clicked())
-            m_Manager->pushMenu(new ModeSelection(m_Manager),new MenuTransitions::Slide(MenuTransitions::Slide::Right,.08),new MenuTransitions::Slide(MenuTransitions::Slide::Left,.08));
-        m_Render.setView(m_DeviceScroll.getView());
-        for(int i=0;i<m_DeviceButtons.size();i++) {
-            if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))
-                m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,128)),
+        if(Foreground) {
+            bool ButtonChanged=false;
+            if(m_CreateButton.Hovering()&&m_CreateSprite.getScale().x<1.1*(isMobile()?.7:1))
+                m_CreateSprite.scale(1.02,1.02),
                 ButtonChanged=true;
-            else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
-                m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
+            if(m_CreateButton.Hovering()==false&&m_CreateSprite.getScale().x>(isMobile()?.7:1))
+                m_CreateSprite.scale(.98,.98),
                 ButtonChanged=true;
+            if(m_CreateButton.Clicked())
+                m_Manager->pushMenu(new ModeSelection(m_Manager),new MenuTransitions::Slide(MenuTransitions::Slide::Right,.08),new MenuTransitions::Slide(MenuTransitions::Slide::Left,.08));
+            m_Render.setView(m_DeviceScroll.getView());
+            for(int i=0;i<m_DeviceButtons.size();i++) {
+                if(m_DeviceButtons[i].Hovering(&m_Render)&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,128))
+                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,128)),
+                    ButtonChanged=true;
+                else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
+                    m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
+                    ButtonChanged=true;
+            }
+            m_Render.setView(m_Render.getDefaultView());
+            if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
         }
-        m_Render.setView(m_Render.getDefaultView());
-        
-        if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
     }
 }

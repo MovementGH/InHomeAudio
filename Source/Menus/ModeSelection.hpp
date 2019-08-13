@@ -12,11 +12,13 @@ namespace Menus {
         virtual void createMenu(sf::Vector2u WindowSize) override;
         virtual void onEvent(sf::Event& Event) override;
         virtual void update(sf::Time Delta,bool Foreground) override;
+        virtual void render() override;
     protected:
         std::vector<sf::Sprite> m_ModeSprites;
+        std::vector<Button> m_ModeButtons;
         ScrollArea m_ModeScroll;
         
-        sf::Texture& m_VoiceTexture;
+        std::vector<sf::Texture*> m_ModeTextures;
     };
 }
 

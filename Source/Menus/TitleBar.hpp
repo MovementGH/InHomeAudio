@@ -16,9 +16,12 @@ namespace Menus {
         sf::Sprite m_Background;
         sf::Text m_Title;
         sf::RectangleShape m_Line;
+        sf::Sprite m_Arrow;
+        Button m_ArrowButton;
         
         sf::Font& m_Font;
         sf::Texture& m_BackgroundTexture;
+        sf::Texture& m_ArrowTexture;
     };
 }
 

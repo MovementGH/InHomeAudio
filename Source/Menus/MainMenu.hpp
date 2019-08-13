@@ -11,8 +11,6 @@ namespace Menus {
         
         virtual void createMenu(sf::Vector2u WindowSize) override;
         virtual void onEvent(sf::Event& Event) override;
-        virtual void onGainFocusComplete() override;
-        virtual void onLoseFocus() override;
         virtual void render() override;
         virtual void update(sf::Time Delta,bool Foreground) override;
         

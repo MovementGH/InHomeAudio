@@ -1,11 +1,12 @@
 #include "UI.hpp"
-InputManager::InputManager(sf::RenderWindow& Window) : m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0), m_ScrollTime(0), m_ResetMouse(false), m_Window(Window) {
+InputManager::InputManager(sf::RenderWindow& Window) : m_IsClicking(false), m_MousePos(0,0), m_ScrollSpeed(0), m_ScrollTime(0), m_ResetMouse(false), m_Clicked(false), m_Window(Window) {
     
 }
 void InputManager::Event(sf::Event& Event) {
     if(isMobile()==false) {
         if(Event.type==sf::Event::MouseButtonPressed&&Event.mouseButton.button==sf::Mouse::Left)
-            m_IsClicking=true;
+            m_IsClicking=true,
+            m_Clicked=true;
         if(Event.type==sf::Event::MouseButtonReleased&&Event.mouseButton.button==sf::Mouse::Left)
             m_IsClicking=false;
         if(Event.type==sf::Event::MouseMoved)
@@ -28,6 +29,7 @@ void InputManager::Event(sf::Event& Event) {
     }
 }
 void InputManager::Reset() {
+    m_Clicked=false;
     if(isMobile()) m_ScrollSpeed*=.95;
     else m_ScrollSpeed=0;
     if(m_ResetMouse)
@@ -38,7 +40,7 @@ void InputManager::Reset() {
         m_IsClicking=false;
 }
 bool InputManager::isClicking() {
-    return m_IsClicking;
+    return m_IsClicking||m_Clicked;
 }
 sf::Vector2i InputManager::getMousePos() {
     return m_MousePos;
