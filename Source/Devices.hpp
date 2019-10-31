@@ -20,6 +20,7 @@ protected:
     virtual void onSeek(sf::Time timeOffset);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
     virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
+    virtual void onPacket(sf::Uint8 Type,sf::Packet& Packet);
     bool m_UsingSamples,m_Init;
     sf::Uint16 m_NumUsed;
     std::vector<sf::Int16> m_Samples;

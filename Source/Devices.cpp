@@ -1,13 +1,13 @@
 #include "Devices.hpp"
 
 InputDeviceStreamer::InputDeviceStreamer() {
-    setChannelCount(1);
+    setChannelCount(2);
     setProcessingInterval(sf::milliseconds(20));
 }
 void InputDeviceStreamer::onConnect(sf::IpAddress IP) {
     start();
     sf::Packet Packet;
-    Packet<<(sf::Uint8)AudioStreamerPacket::StreamType<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
+    Packet<<(sf::Uint8)StreamMeta<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
     m_SocketOut.send(Packet,IP,18500);
 }
 void InputDeviceStreamer::onDisconnect() {
@@ -29,6 +29,9 @@ void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRa
         play();
         m_Init=true;
     }
+}
+void OutputDeviceStreamer::onPacket(sf::Uint8 Type,sf::Packet& Packet) {
+    
 }
 bool OutputDeviceStreamer::onGetData(Chunk& data) {
     while(m_UsingSamples==true) { sf::sleep(sf::milliseconds(1)); }

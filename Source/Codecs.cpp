@@ -2,7 +2,7 @@
 
 sf::Packet AudioCodec::Encode(std::vector<sf::Int16> &Samples) {
     sf::Packet Packet;
-    Packet<<(sf::Uint8)AudioStreamerPacket::Audio<<(sf::Uint64)Samples.size();
+    Packet<<(sf::Uint8)0<<(sf::Uint64)Samples.size();
     for(int i=0;i<Samples.size();i++)
         Packet<<Samples[i];
     return Packet;
@@ -34,12 +34,12 @@ sf::Packet OpusCodec::Encode(std::vector<sf::Int16> &Samples) {
     sf::Packet Packet;
     Samples.insert(Samples.begin(),m_Buffer.begin(),m_Buffer.end());
     sf::Uint16 FrameSize=(Samples.size()>=5760)?2880:((Samples.size()>=3840)?1920:((Samples.size()>=1920?960:((Samples.size()>=960?480:0)))));
-    if(FrameSize==0) return Packet<<(sf::Uint8)AudioStreamerPacket::Audio<<(sf::Uint8)0;
+    if(FrameSize==0) return Packet<<(sf::Uint8)0<<(sf::Uint8)0;
     m_Buffer.clear();
     m_Buffer.insert(m_Buffer.begin(),Samples.begin()+FrameSize*2,Samples.end());
     Samples.erase(Samples.begin()+FrameSize*2,Samples.end());
     sf::Uint32 DataSize=opus_encode(m_Encoder,Samples.data(),FrameSize,m_Samples.data(),(int)m_Samples.size());
-    Packet<<(sf::Uint8)AudioStreamerPacket::Audio<<FrameSize<<DataSize;
+    Packet<<(sf::Uint8)0<<FrameSize<<DataSize;
     for(int i=0;i<DataSize;i++) Packet<<(sf::Uint8)m_Samples[i];
     return Packet;
 }

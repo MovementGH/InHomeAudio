@@ -4,15 +4,6 @@
 #include <opus.h>
 #include <SFML/Network.hpp>
 
-enum AudioStreamerPacket {
-    Connect=0,
-    ConnectAccept=1,
-    ConnectReject=2,
-    Audio=3,
-    Disconnect=4,
-    StreamType=5
-};
-
 class AudioCodec {
 public:
     virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);

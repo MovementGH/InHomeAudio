@@ -6,13 +6,24 @@
 #include "Codecs.hpp"
 #include "Filters.hpp"
 
+#define StreamerPort 18500
+
 class AudioStreamer {
 public:
+    enum Payload {
+        Audio=0,
+        Connect=1,
+        ConnectAccept=1,
+        ConnectReject=2,
+        Disconnect=4,
+        StreamMeta=5
+    };
+    
     AudioStreamer();
     ~AudioStreamer();
     
-    void Connect(sf::IpAddress IP);
-    void Disconnect();
+    void connect(sf::IpAddress IP);
+    void disconnect();
     
     bool isConnected();
     
@@ -23,11 +34,13 @@ protected:
     virtual void onConnectRequest(sf::IpAddress IP);
     virtual void onConnectReject(sf::IpAddress IP);
     virtual void onSamples(std::vector<sf::Int16> &Samples);
-    virtual void onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
+    virtual void onPacket(sf::Uint8 Type,sf::Packet& Packet);
+    virtual void onMeta(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
     virtual void onConnect(sf::IpAddress IP);
     virtual void onDisconnect();
     
     void sendSamples(std::vector<sf::Int16> &Samples);
+    void sendMeta(sf::Uint8 ChannelCount,sf::Uint32 SampleRate);
     
     bool m_Connected,m_Listen;
     sf::Time m_BufferSize;
