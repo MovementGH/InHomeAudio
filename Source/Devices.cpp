@@ -1,16 +1,18 @@
 #include "Devices.hpp"
 
-InputDeviceStreamer::InputDeviceStreamer() {
+InputDeviceStreamer::InputDeviceStreamer() : m_Recording(false) {
     setChannelCount(2);
     setProcessingInterval(sf::milliseconds(20));
 }
 void InputDeviceStreamer::onConnect(sf::IpAddress IP) {
-    start();
+    if(m_Recording==false) start();
+    m_Recording=true;
     sf::Packet Packet;
     Packet<<(sf::Uint8)StreamMeta<<(sf::Uint8)2<<(sf::Uint32)getSampleRate();
     m_SocketOut.send(Packet,IP,18500);
 }
 void InputDeviceStreamer::onDisconnect() {
+    m_Recording=false;
     stop();
 }
 bool InputDeviceStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount) {
@@ -22,7 +24,7 @@ bool InputDeviceStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t 
     return true;
 }
 
-OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0), m_Init(false) {}
+OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0), m_UsingSamples(false), m_Init(false) {}
 void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
     if(m_Init==false) {
         initialize(ChannelCount,SampleRate);

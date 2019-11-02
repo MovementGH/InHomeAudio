@@ -10,6 +10,7 @@ protected:
     virtual bool onProcessSamples(const sf::Int16* Samples,std::size_t SampleCount);
     virtual void onConnect(sf::IpAddress IP);
     virtual void onDisconnect();
+    bool m_Recording;
 };
 
 class OutputDeviceStreamer : virtual public AudioStreamer, public sf::SoundStream {
