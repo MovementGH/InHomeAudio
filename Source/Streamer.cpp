@@ -1,6 +1,5 @@
 #include "Streamer.hpp"
-
-AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(sf::seconds(.1)) {
+AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(sf::seconds(.2)) {
     m_Codec=new AudioCodec();
     m_SocketOut.setBlocking(false);
     m_SocketIn.setBlocking(true);
@@ -19,8 +18,10 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(
                     if(Status==sf::Socket::Done) {
                         sf::Uint8 Type;
                         Packet>>Type;
-                        if(Type==Connect&&m_Connected==false)
-                                onConnectRequest(IP);
+                        if(Type==Connect) {
+                            if(m_Connected) disconnect();
+                            onConnectRequest(IP);
+                        }
                         else if(Type==ConnectAccept) {
                             m_Connected=true;
                             m_IP=IP;
@@ -28,7 +29,7 @@ AudioStreamer::AudioStreamer() : m_Connected(false),m_Listen(true),m_BufferSize(
                         }
                         else if(Type==ConnectReject)
                             onConnectReject(IP);
-                        else if(Type==Audio) {
+                        else if(Type==Audio&&m_Connected) {
                             std::vector<sf::Int16> Samples=m_Codec->Decode(Packet);
                             bool UseSamples=true;
                             for(int i=0;i<m_FilterIn.size();i++)
