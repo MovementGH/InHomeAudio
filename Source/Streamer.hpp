@@ -13,8 +13,8 @@ public:
     enum Payload {
         Audio=0,
         Connect=1,
-        ConnectAccept=1,
-        ConnectReject=2,
+        ConnectAccept=2,
+        ConnectReject=3,
         Disconnect=4,
         StreamMeta=5
     };
