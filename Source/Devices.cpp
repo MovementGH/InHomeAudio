@@ -25,7 +25,7 @@ bool InputDeviceStreamer::onProcessSamples(const sf::Int16* Samples,std::size_t 
 }
 
 OutputDeviceStreamer::OutputDeviceStreamer() : m_NumUsed(0), m_UsingSamples(false), m_Init(false) {}
-void OutputDeviceStreamer::onGetStats(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
+void OutputDeviceStreamer::onMeta(sf::Uint8 ChannelCount,sf::Uint32 SampleRate) {
     if(m_Init==false) {
         initialize(ChannelCount,SampleRate);
         play();
