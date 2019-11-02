@@ -13,7 +13,7 @@ public:
     NoiseFilter(int QuietLevel=0);
     bool Filter(std::vector<sf::Int16>& Samples);
 protected:
-    int m_QuietLevel;
+    int m_Quiet;
 };
 
 #endif /* Filters_hpp */
