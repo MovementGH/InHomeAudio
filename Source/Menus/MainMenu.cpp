@@ -118,6 +118,12 @@ namespace Menus {
                 else if(m_DeviceButtons[i].Hovering(&m_Render)==false&&m_DeviceOutlines[i].getFillColor()!=sf::Color(0,0,0,64))
                     m_DeviceOutlines[i].setFillColor(sf::Color(0,0,0,64)),
                     ButtonChanged=true;
+                if(m_DeviceButtons[i].Clicked(&m_Render)) {
+                    InputDeviceStreamer Streamer;
+                    Streamer.connect(m_Manager->getDiscovery().getDevices()[i]->ip);
+                    Streamer.setCodec<OpusCodec>();
+                    while(!sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){sf::sleep(sf::seconds(.1));}
+                }
             }
             m_Render.setView(m_Render.getDefaultView());
             if(updateDevices()||m_Manager->getInput().getScrollSpeed()!=0||ButtonChanged) render();
