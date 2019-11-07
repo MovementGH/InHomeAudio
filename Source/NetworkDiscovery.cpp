@@ -10,13 +10,14 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
             sf::Packet Packet;
             sf::IpAddress IP;
             sf::Uint16 Port;
-            int Loops=0;
             while(m_Search) {
-                if(Loops%20==0) {
-                    Status=sf::Socket::Done;
-                    while(Status==sf::Socket::Done) {
-                        Status=Socket.receive(Packet,IP,Port);
-                        if(Status==sf::Socket::Done&&IP!=sf::IpAddress::getLocalAddress()) {
+                Status=sf::Socket::Done;
+                while(Status==sf::Socket::Done) {
+                    Status=Socket.receive(Packet,IP,Port);
+                    if(Status==sf::Socket::Done&&IP!=sf::IpAddress::getLocalAddress()) {
+                        sf::Uint8 Type;
+                        Packet>>Type;
+                        if(Type==DeviceInfo) {
                             Device* Received=decodePacket(Packet);
                             Received->ip=IP;
                             bool Found=false;
@@ -27,14 +28,23 @@ NetworkDiscovery::NetworkDiscovery(bool Discoverable) : m_Discoverable(Discovera
                                     Found=true;
                             if(Found==false) m_Devices.push_back(Received);
                         }
-                        else if(Status==sf::Socket::Error)
-                            std::cout<<"Socket Error!"<<std::endl;
+                        else if(Type==DeviceQuery) {
+                            Packet=createPacket();
+                            Socket.send(Packet,IP,52575);
+                        }
                     }
-                    if(m_Discoverable) {
-                        Packet=createPacket();
-                        Socket.send(Packet,sf::IpAddress::Broadcast,52575);
-                    }
-                    
+                    else if(Status==sf::Socket::Error)
+                        std::cout<<"Socket Error!"<<std::endl;
+                }
+                if(m_Discoverable) {
+                    Packet=createPacket();
+                    Socket.send(Packet,sf::IpAddress::Broadcast,52575);
+                }
+                while(m_QueryQueue.size()) {
+                    Packet.clear();
+                    Packet<<(sf::Uint8)DeviceQuery;
+                    Socket.send(Packet,m_QueryQueue[m_QueryQueue.size()-1],52575);
+                    m_QueryQueue.pop_back();
                 }
                 sf::sleep(sf::seconds(.1));
             }
@@ -57,7 +67,7 @@ NetworkDiscovery::Device* NetworkDiscovery::decodePacket(sf::Packet& Packet) {
 }
 sf::Packet NetworkDiscovery::createPacket() {
     sf::Packet Packet;
-    Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform();
+    Packet<<(sf::Uint8)DeviceInfo<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform();
     return Packet;
 }
 NetworkDiscovery::~NetworkDiscovery() {
@@ -67,6 +77,9 @@ NetworkDiscovery::~NetworkDiscovery() {
 }
 void NetworkDiscovery::setDiscoverable(bool Discoverable) {
     m_Discoverable=Discoverable;
+}
+void NetworkDiscovery::queryDevice(sf::IpAddress Device) {
+    m_QueryQueue.push_back(Device);
 }
 bool NetworkDiscovery::getDiscoverable() {
     return m_Discoverable;
@@ -91,7 +104,7 @@ NetworkDiscovery::Device* StatusDiscovery::decodePacket(sf::Packet& Packet) {
 }
 sf::Packet StatusDiscovery::createPacket() {
     sf::Packet Packet;
-    Packet<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform()<<m_Status;
+    Packet<<(sf::Uint8)DeviceInfo<<(sf::String)getComputerName()<<(sf::Uint8)getPlatform()<<m_Status;
     return Packet;
 }
 void StatusDiscovery::setStatus(sf::String Status){m_Status=Status;}

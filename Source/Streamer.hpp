@@ -26,6 +26,7 @@ public:
     void disconnect();
     
     bool isConnected();
+    sf::IpAddress getPeerIP();
     
     template<typename CodecType>void setCodec(CodecType* Codec=new CodecType()){m_Codec=Codec;}
     

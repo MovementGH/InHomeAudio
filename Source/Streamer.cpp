@@ -117,3 +117,4 @@ void AudioStreamer::onConnectRequest(sf::IpAddress IP) {
     m_Connected=true;
     onConnect(IP);
 }
+sf::IpAddress AudioStreamer::getPeerIP(){return m_IP;}

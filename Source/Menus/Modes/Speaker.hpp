@@ -2,6 +2,7 @@
 #define Speaker_hpp
 #include "../../ResourcePath.hpp"
 #include "../../Transitions.hpp"
+#include "../../Devices.hpp"
 
 namespace Menus {
     namespace Modes {
@@ -15,6 +16,17 @@ namespace Menus {
             virtual void render() override;
             virtual void update(sf::Time Delta,bool Foreground) override;
         protected:
+            sf::Font& m_Font;
+            
+            OutputDeviceStreamer m_Streamer;
+            bool m_Connected,m_Queried;
+            
+            sf::Text m_DisconnectedText;
+            
+            sf::Text m_ConnectedText;
+            
+            NetworkDiscovery::Device m_Peer;
+            
         };
     }
 }

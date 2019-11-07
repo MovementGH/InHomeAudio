@@ -14,12 +14,18 @@ public:
         sf::IpAddress ip;
         sf::Int64 lastSeen;
     };
+    enum PacketType {
+        DeviceInfo=0,
+        DeviceQuery=1
+    };
     
     NetworkDiscovery(bool Discoverable=false);
     ~NetworkDiscovery();
     
     void setDiscoverable(bool Discoverable);
     bool getDiscoverable();
+    
+    void queryDevice(sf::IpAddress Device);
     
     virtual sf::Packet createPacket();
     virtual Device* decodePacket(sf::Packet& Packet);
@@ -29,6 +35,7 @@ public:
 protected:
     std::thread* m_WorkerThread;
     std::vector<Device*> m_Devices;
+    std::vector<sf::IpAddress> m_QueryQueue;
     bool m_Discoverable,m_Search;
 };
 
