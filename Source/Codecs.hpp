@@ -13,7 +13,7 @@ public:
 
 class OpusCodec : public AudioCodec {
 public:
-    OpusCodec(int m_Bitrate=64000);
+    OpusCodec(int m_Bitrate=42000);
     ~OpusCodec();
     virtual sf::Packet Encode(std::vector<sf::Int16> &Samples);
     virtual std::vector<sf::Int16> Decode(sf::Packet &Packet);
